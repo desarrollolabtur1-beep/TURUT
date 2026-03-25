@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&amp;family=Manrope:wght@400;500;600;700;800&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-error-container": "#ffd2c8",
+              "background": "#0e0e0f",
+              "on-surface-variant": "#adaaab",
+              "inverse-primary": "#984900",
+              "inverse-surface": "#fcf8f9",
+              "surface-dim": "#0e0e0f",
+              "tertiary-dim": "#24ef93",
+              "surface-container-low": "#131314",
+              "tertiary-container": "#3ffea0",
+              "on-secondary": "#005d35",
+              "surface-bright": "#2c2c2d",
+              "on-tertiary-fixed-variant": "#00673c",
+              "on-primary-fixed-variant": "#512400",
+              "primary-fixed": "#ff8522",
+              "tertiary-fixed": "#3ffea0",
+              "error": "#ff7351",
+              "on-tertiary": "#00663b",
+              "primary": "#ff9243",
+              "on-secondary-fixed-variant": "#00673c",
+              "on-background": "#ffffff",
+              "secondary-dim": "#24ef93",
+              "primary-dim": "#f47d18",
+              "secondary-container": "#006d3f",
+              "surface-container-highest": "#262627",
+              "on-surface": "#ffffff",
+              "on-tertiary-fixed": "#004828",
+              "secondary-fixed-dim": "#24ef93",
+              "primary-fixed-dim": "#ee7811",
+              "secondary": "#3ffea0",
+              "tertiary": "#b2ffcb",
+              "outline": "#767576",
+              "error-dim": "#d53d18",
+              "surface-container-lowest": "#000000",
+              "outline-variant": "#484849",
+              "on-secondary-fixed": "#004828",
+              "on-tertiary-container": "#005d35",
+              "on-primary": "#4e2200",
+              "surface-container": "#19191b",
+              "surface": "#0e0e0f",
+              "error-container": "#b92902",
+              "on-primary-fixed": "#100300",
+              "tertiary-fixed-dim": "#24ef93",
+              "inverse-on-surface": "#565556",
+              "on-secondary-container": "#e2ffe7",
+              "surface-tint": "#ff9243",
+              "on-error": "#450900",
+              "secondary-fixed": "#3ffea0",
+              "primary-container": "#f8801c",
+              "on-primary-container": "#3c1900",
+              "surface-container-high": "#1f1f21",
+              "surface-variant": "#262627"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Manrope"],
+              "label": ["Manrope"]
+            },
+            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        @keyframes pulse-emerald {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 238, 146, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(34, 238, 146, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 238, 146, 0); }
+        }
+        .pulse-dot {
+            animation: pulse-emerald 2s infinite;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface-dim text-on-surface font-body min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-zinc-950/60 backdrop-blur-xl flex justify-between items-center px-6 py-4 w-full">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-zinc-400 hover:opacity-80 transition-opacity scale-95 active:scale-90 transition-transform cursor-pointer">menu</span>
+<h1 class="text-2xl font-black text-orange-500 font-['Plus_Jakarta_Sans'] font-extrabold tracking-tighter">Wohin</h1>
+</div>
+<div class="w-10 h-10 rounded-full overflow-hidden border border-outline-variant/20 hover:opacity-80 transition-opacity scale-95 active:scale-90 transition-transform cursor-pointer">
+<img alt="User Profile Avatar" class="w-full h-full object-cover" data-alt="User profile circular headshot portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBhZ0kDasvjy9Gz-a1E9RbZANgnoKriLf7_7Nhinlexx6xgsiajXyCXs9IuEL_yL9jqlDOE5qyidgr81ASiwXWDwXFhTipGTBdsjGjWd3oVbbrmBDzquY8j782rxQMR7aI1m-a1gGGdNL-2j7nQ8VjIzGAA5ADPk1fQXp3v5dw9bu12hhBSXRW6TbTd-cWWsfZffG3svQTYQYxiU2efA2xx6s8g7DC6FbnS7SJm_Yb2mbztayCVJ2WdvwkdoKu8reOFTPsYQiZngQ"/>
+</div>
+</header>
+<main class="pt-24 px-6 max-w-2xl mx-auto">
+<!-- Section Header -->
+<div class="flex items-center gap-3 mb-8">
+<div class="w-3 h-3 rounded-full bg-secondary pulse-dot"></div>
+<h2 class="text-3xl font-headline font-extrabold text-on-surface tracking-tight">¿Qué está pasando ahora?</h2>
+</div>
+<!-- Event Feed List -->
+<div class="flex flex-col gap-6">
+<!-- Event Card 1 -->
+<div class="bg-surface-container-high backdrop-blur-lg p-4 rounded-lg flex items-center justify-between group hover:bg-surface-container-highest transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 flex-shrink-0 bg-surface-container-low rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">bolt</span>
+</div>
+<div class="flex flex-col">
+<span class="text-[0.7rem] font-bold font-label uppercase tracking-widest text-primary-fixed">Cañón del Combeima • Ahora mismo</span>
+<h3 class="text-base font-bold text-on-surface leading-tight">Atardecer Musical en el Mirador</h3>
+</div>
+</div>
+<button class="bg-surface-container-lowest text-on-surface text-[0.75rem] font-bold px-5 py-2 rounded-full hover:bg-surface-bright transition-colors scale-95 active:scale-90">Ver</button>
+</div>
+<!-- Event Card 2 -->
+<div class="bg-surface-container-high backdrop-blur-lg p-4 rounded-lg flex items-center justify-between group hover:bg-surface-container-highest transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 flex-shrink-0 bg-surface-container-low rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">bolt</span>
+</div>
+<div class="flex flex-col">
+<span class="text-[0.7rem] font-bold font-label uppercase tracking-widest text-primary-fixed">El Totumo • Hoy 7:00 PM</span>
+<h3 class="text-base font-bold text-on-surface leading-tight">Noche de Antorchas en el Spa</h3>
+</div>
+</div>
+<button class="bg-surface-container-lowest text-on-surface text-[0.75rem] font-bold px-5 py-2 rounded-full hover:bg-surface-bright transition-colors scale-95 active:scale-90">Ver</button>
+</div>
+<!-- Event Card 3 -->
+<div class="bg-surface-container-high backdrop-blur-lg p-4 rounded-lg flex items-center justify-between group hover:bg-surface-container-highest transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 flex-shrink-0 bg-surface-container-low rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">bolt</span>
+</div>
+<div class="flex flex-col">
+<span class="text-[0.7rem] font-bold font-label uppercase tracking-widest text-primary-fixed">Villa Restrepo • En curso</span>
+<h3 class="text-base font-bold text-on-surface leading-tight">Festival del Sancocho de Leña</h3>
+</div>
+</div>
+<button class="bg-surface-container-lowest text-on-surface text-[0.75rem] font-bold px-5 py-2 rounded-full hover:bg-surface-bright transition-colors scale-95 active:scale-90">Ver</button>
+</div>
+<!-- Event Card 4 -->
+<div class="bg-surface-container-high backdrop-blur-lg p-4 rounded-lg flex items-center justify-between group hover:bg-surface-container-highest transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 flex-shrink-0 bg-surface-container-low rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">bolt</span>
+</div>
+<div class="flex flex-col">
+<span class="text-[0.7rem] font-bold font-label uppercase tracking-widest text-primary-fixed">Finca El Cafetal • Hoy 4:00 PM</span>
+<h3 class="text-base font-bold text-on-surface leading-tight">Cata de Café de Especialidad</h3>
+</div>
+</div>
+<button class="bg-surface-container-lowest text-on-surface text-[0.75rem] font-bold px-5 py-2 rounded-full hover:bg-surface-bright transition-colors scale-95 active:scale-90">Ver</button>
+</div>
+<!-- Event Card 5 -->
+<div class="bg-surface-container-high backdrop-blur-lg p-4 rounded-lg flex items-center justify-between group hover:bg-surface-container-highest transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 flex-shrink-0 bg-surface-container-low rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">bolt</span>
+</div>
+<div class="flex flex-col">
+<span class="text-[0.7rem] font-bold font-label uppercase tracking-widest text-primary-fixed">Pueblo de Juntas • Mañana 10 AM</span>
+<h3 class="text-base font-bold text-on-surface leading-tight">Feria de Artesanías Locales</h3>
+</div>
+</div>
+<button class="bg-surface-container-lowest text-on-surface text-[0.75rem] font-bold px-5 py-2 rounded-full hover:bg-surface-bright transition-colors scale-95 active:scale-90">Ver</button>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-8 left-0 right-0 mx-auto w-[min(400px,90%)] z-50 flex justify-around items-center py-3 px-2 bg-zinc-900/40 backdrop-blur-2xl rounded-full shadow-[0_8px_32px_rgba(255,133,34,0.12)]">
+<!-- Explora Tab -->
+<a class="flex flex-col items-center justify-center text-zinc-400 px-4 py-2 hover:text-white transition-colors cursor-pointer" href="#">
+<span class="material-symbols-outlined">local_fire_department</span>
+<span class="font-['Plus_Jakarta_Sans'] font-bold text-[10px] uppercase tracking-widest">Explora</span>
+</a>
+<!-- Top 5 Tab -->
+<a class="flex flex-col items-center justify-center text-zinc-400 px-4 py-2 hover:text-white transition-colors cursor-pointer" href="#">
+<span class="material-symbols-outlined">grid_view</span>
+<span class="font-['Plus_Jakarta_Sans'] font-bold text-[10px] uppercase tracking-widest">Top 5</span>
+</a>
+<!-- Radar Tab (ACTIVE) -->
+<a class="flex flex-col items-center justify-center bg-orange-500 text-zinc-950 rounded-full px-6 py-2 scale-110 duration-200 haptic-feedback cursor-pointer" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">notifications</span>
+<span class="font-['Plus_Jakarta_Sans'] font-bold text-[10px] uppercase tracking-widest">Radar</span>
+</a>
+</nav>
+</body></html>

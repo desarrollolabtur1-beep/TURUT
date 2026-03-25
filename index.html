@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>TURUT — Descubre Ibagué de Noche</title>
+  <meta name="description" content="Descubre las mejores experiencias turísticas de Ibagué. Tu ruta nocturna y premium." />
+  <meta name="theme-color" content="#050505" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="turut.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Great+Vibes&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@700&family=Montserrat:wght@700;800;900&family=Orbitron:wght@700;900&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- Atmosphere glows -->
+  <div class="glow-bg glow-top"></div>
+  <div class="glow-bg glow-bottom"></div>
+
+  <div class="app-container">
+
+    <!-- ===== HEADER (Módulo 0) ===== -->
+    <header class="header-contextual">
+      <!-- Cima Absoluta: Nuevo Logo Superior -->
+      <div class="top-logo-container">
+        <div class="turut-logo-wrapper">
+          <span class="logo-symbol left-s">s</span>
+          <span class="sturuts-core">TURUT</span>
+          <span class="logo-symbol right-s">s</span>
+        </div>
+      </div>
+
+      <div class="header-info-bar">
+        <div class="header-info-left">
+          <span class="header-date" id="header-date">SÁB 28 DE MAR</span>
+          <span class="header-separator">|</span>
+          <div class="header-weather">
+            <span id="header-weather-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="M20 12h2"/><path d="m19.07 4.93-1.41 1.41"/><path d="M15.947 12.65a4 4 0 0 0-5.925-4.128"/><path d="M13 22H7a5 5 0 1 1 4.9-6H13a3 3 0 0 1 0 6Z"/></svg></span>
+            <span id="header-temp">28°C</span>
+          </div>
+        </div>
+        <div class="header-info-right">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="var(--secondary)" stroke="var(--secondary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="header-pin-icon"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3" fill="var(--surface-container-low)"/></svg>
+          <h1 class="header-city">Ibagué</h1>
+        </div>
+      </div>
+    </header>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="main-content">
+
+      <!-- CONTEXTUAL HERO (hidden, replaced by Módulo 0) -->
+      <div id="contextual-hero" class="contextual-hero" style="display:none;"></div>
+
+      <!-- VIEW: TOP 5 EXPERIENCIAS (Catálogo) -->
+      <section id="view-top5" class="view active">
+        <h2 class="font-headline" style="font-size: 2rem; padding: 0 1.5rem; margin-top: 0.5rem; margin-bottom: 1rem; color: #fff; letter-spacing: -0.02em;">Imperdibles</h2>
+        <!-- Segmented Control (Top 5 / Mi Ruta) -->
+        <div class="segment-control-wrapper">
+          <div class="segment-control">
+            <div class="segment-bg"></div>
+            <button class="segment-btn active" data-tab="top5">🔥 Top 5 Imperdibles</button>
+            <button class="segment-btn" data-tab="miruta">💛 Tus Matches</button>
+          </div>
+        </div>
+        
+        <!-- Style Filter Chips -->
+        <div class="style-chips" id="style-chips">
+          <button class="style-chip active" data-filter="all">Todos</button>
+          <button class="style-chip" data-filter="Aventura">Aventura</button>
+          <button class="style-chip" data-filter="Relax">Relax</button>
+          <button class="style-chip" data-filter="Gastronomía">Gastro</button>
+          <button class="style-chip" data-filter="Cultura">Cultura</button>
+          <button class="style-chip" data-filter="Coffee">Coffee</button>
+        </div>
+
+        <div id="activity-list" class="activity-list">
+          <!-- Populated by JS -->
+        </div>
+      </section>
+
+      <!-- VIEW: DESCUBRE (Swipe - Tu Ruta) -->
+      <section id="view-descubre" class="view">
+        <div class="discovery-view">
+          <div class="swipe-card-container" id="swipe-container">
+            <!-- Populated by JS -->
+          </div>
+          <div class="swipe-progress" id="swipe-progress">
+            <!-- Dots rendered by JS -->
+          </div>
+          <div class="controls">
+            <button class="control-btn btn-reject" id="btn-reject">
+              <div class="control-icon-wrapper">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+              </div>
+              <span>Paso</span>
+            </button>
+            <button class="control-btn btn-match" id="btn-match">
+              <div class="control-icon-wrapper">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              </div>
+              <span>Me interesa</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW: EVENTOS (Radar) -->
+      <section id="view-radar" class="view">
+        <h2 class="section-title" style="display:flex;align-items:center">
+          <span class="live-dot"></span>
+          ¿Qué está pasando ahora?
+        </h2>
+        <div id="event-list" class="event-list">
+          <!-- Populated by JS -->
+        </div>
+      </section>
+
+    </main>
+
+    <!-- ===== BOTTOM NAVIGATION ===== -->
+    <nav class="bottom-nav" id="bottom-nav">
+      <button class="nav-btn active" data-view="view-top5" id="nav-top5">
+        <span class="nav-icon">⭐</span>
+        <span class="nav-label">Imperdibles</span>
+      </button>
+      <button class="nav-btn" data-view="view-descubre" id="nav-descubre">
+        <span class="nav-icon" style="display: flex; align-items: center; justify-content: center;">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1.25em" height="1.25em">
+            <!-- Back card -->
+            <g transform="translate(14, 11.5) rotate(12) translate(-12, -12)">
+              <rect x="6" y="3" width="12" height="18" rx="2" fill="var(--surface-container-high)" stroke="currentColor" stroke-width="1.5" />
+              <rect x="7.5" y="4.5" width="9" height="15" rx="1" fill="none" stroke="currentColor" stroke-width="0.5" opacity="0.4" />
+            </g>
+            <!-- Front card -->
+            <g transform="translate(10, 12.5) rotate(-8) translate(-12, -12)">
+              <rect x="6" y="3" width="12" height="18" rx="2" fill="var(--surface-container-highest)" stroke="currentColor" stroke-width="1.5" />
+              <rect x="7.5" y="4.5" width="9" height="15" rx="1" fill="none" stroke="currentColor" stroke-width="0.5" />
+              <path d="M12 7.5 C12.2 10 13.5 11.2 16 11.5 C13.5 11.8 12.2 13 12 15.5 C11.8 13 10.5 11.8 8 11.5 C10.5 11.2 11.8 10 12 7.5 Z" fill="currentColor" stroke="none" />
+            </g>
+          </svg>
+        </span>
+        <span class="nav-label">Tu Ruta</span>
+      </button>
+      <button class="nav-btn" data-view="view-radar" id="nav-radar">
+        <span class="nav-icon" style="display: flex; align-items: center; justify-content: center;">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1.15em" height="1.15em">
+            <circle cx="12" cy="12" r="11" fill="currentColor" />
+            <circle cx="12" cy="12" r="7" fill="none" stroke="#fff" stroke-width="1.2" />
+            <circle cx="12" cy="12" r="3" fill="none" stroke="#fff" stroke-width="1.2" />
+            <circle cx="12" cy="12" r="1" fill="#fff" />
+            <path d="M 12 12 L 19.77 4.23 A 11 11 0 0 1 23 12 Z" fill="#fff" />
+            <circle cx="18" cy="8" r="1.5" fill="currentColor" />
+            <circle cx="7" cy="17" r="1.5" fill="#fff" />
+          </svg>
+        </span>
+        <span class="nav-label">Radar</span>
+      </button>
+    </nav>
+
+  </div><!-- /app-container -->
+
+  <!-- ===== LANDING OVERLAY ===== -->
+  <div id="landing-overlay" class="landing-overlay">
+    <div class="landing-hero">
+      <img id="landing-img" class="landing-img" src="" alt="Destination" />
+      <button class="landing-close" id="landing-close">
+        <svg class="lucide" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      </button>
+    </div>
+    <div class="landing-content">
+      <p class="landing-category" id="landing-cat"></p>
+      <h2 class="landing-title font-headline" id="landing-name"></h2>
+      <p class="landing-desc" id="landing-desc"></p>
+
+      <!-- Countdown Timer -->
+      <div class="timer-widget glass-card">
+        <p class="landing-category">OFERTA EXCLUSIVA</p>
+        <div class="timer-clock" id="timer-clock">30:00</div>
+        <p style="color:var(--text-secondary);font-size:0.85rem">
+          Llega antes de que expire el tiempo para obtener tu
+          <strong style="color:var(--secondary);font-weight:800" id="landing-discount">20%</strong>
+          de descuento.
+        </p>
+      </div>
+
+      <!-- Social Media Links -->
+      <div class="social-links-row" style="display:flex; justify-content:center; gap:1.5rem; margin:1.5rem 0;">
+        <a href="#" class="social-icon-btn" target="_blank" aria-label="Instagram">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+        </a>
+        <a href="#" class="social-icon-btn" target="_blank" aria-label="Facebook">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+        </a>
+        <a href="#" class="social-icon-btn" target="_blank" aria-label="Twitter">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg>
+        </a>
+      </div>
+
+      <!-- Primary CTA -->
+      <button class="cta-golden" id="landing-cta">Activar Bono de Ahorro</button>
+    </div>
+  </div>
+
+  <script src="scripts.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('service-worker.js')
+          .then(reg => console.log('SW registered!', reg))
+          .catch(err => console.error('SW failed!', err));
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@800&amp;family=Manrope:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-secondary-fixed-variant": "#00673c",
+              "secondary-fixed": "#3ffea0",
+              "error": "#ff7351",
+              "surface-container-highest": "#262627",
+              "on-surface-variant": "#adaaab",
+              "tertiary-fixed": "#fac129",
+              "surface-container": "#19191b",
+              "surface-tint": "#ff9243",
+              "background": "#0e0e0f",
+              "surface-dim": "#0e0e0f",
+              "on-error-container": "#ffd2c8",
+              "on-primary-fixed-variant": "#512400",
+              "on-primary-fixed": "#100300",
+              "tertiary-fixed-dim": "#eab317",
+              "on-secondary-container": "#e2ffe7",
+              "error-container": "#b92902",
+              "primary-container": "#f8801c",
+              "secondary-container": "#006d3f",
+              "on-tertiary": "#604700",
+              "outline": "#767576",
+              "surface-bright": "#2c2c2d",
+              "secondary-dim": "#24ef93",
+              "primary-fixed-dim": "#ee7811",
+              "on-surface": "#ffffff",
+              "on-secondary-fixed": "#004828",
+              "on-tertiary-fixed-variant": "#604700",
+              "tertiary-dim": "#eab317",
+              "outline-variant": "#484849",
+              "secondary": "#3ffea0",
+              "primary": "#ff9243",
+              "on-tertiary-fixed": "#3c2c00",
+              "surface-container-low": "#131314",
+              "primary-fixed": "#ff8522",
+              "tertiary": "#ffd169",
+              "on-tertiary-container": "#553f00",
+              "on-primary": "#4e2200",
+              "surface-container-lowest": "#000000",
+              "on-secondary": "#005d35",
+              "surface": "#0e0e0f",
+              "inverse-primary": "#984900",
+              "error-dim": "#d53d18",
+              "on-primary-container": "#3c1900",
+              "inverse-surface": "#fcf8f9",
+              "surface-variant": "#262627",
+              "secondary-fixed-dim": "#24ef93",
+              "primary-dim": "#f47d18",
+              "tertiary-container": "#fac129",
+              "inverse-on-surface": "#565556",
+              "on-background": "#ffffff",
+              "surface-container-high": "#1f1f21",
+              "on-error": "#450900"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Manrope"],
+              "label": ["Manrope"]
+            },
+            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: rgba(32, 31, 32, 0.6);
+            backdrop-filter: blur(12px);
+            border-top: 1px solid rgba(173, 170, 171, 0.1);
+            border-left: 1px solid rgba(173, 170, 171, 0.1);
+        }
+        .glass-card:active {
+            box-shadow: 0px 12px 32px 0px rgba(255, 133, 34, 0.15);
+        }
+        .sunset-underline {
+            position: relative;
+        }
+        .sunset-underline::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, #ff9243, transparent);
+            border-radius: 2px;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface-container-low text-on-surface font-body min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-black/60 backdrop-blur-xl flex justify-between items-center px-6 py-4 w-full">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-orange-500">menu</span>
+<h1 class="text-2xl font-['Plus_Jakarta_Sans'] font-extrabold text-orange-500 tracking-tighter">Wohin</h1>
+</div>
+<div class="w-10 h-10 rounded-full bg-surface-container-highest overflow-hidden border border-outline-variant/20">
+<img alt="User Profile Avatar" class="w-full h-full object-cover" data-alt="Professional male user portrait headshot" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBPO7QpYky6UxQQoYhkw_auJUEIMclyvsSsa3qNesk_rT5klRi4OhGHih720A6oitJw2C5kD87lBcWt2HRohsMpinTqoEv66Nnv5oAfahziX6JdKPnwr9Bj6rukcpj6C4qYD5FnVfL7iIdMMD3g54Fr-BxCleX9gV7Ew7Ujva0W7PvBncsXys3grdrzkpUASKFBqFA7Cic7bW7PCb2mabD9v0tCzOGtoPKbhOPVUCjbN_yuMiYU4_ZK-dL5bcG02EiijB1jMx7wAQ"/>
+</div>
+</header>
+<main class="pt-24 px-6 max-w-[390px] mx-auto">
+<!-- Section Header -->
+<div class="mb-8">
+<h2 class="text-3xl font-headline font-extrabold tracking-tight sunset-underline">
+                Top 5 Experiencias
+            </h2>
+</div>
+<!-- Experiences List -->
+<div class="space-y-4">
+<!-- Card 1 -->
+<div class="glass-card p-3 rounded-lg flex items-center gap-4 transition-all duration-300 active:scale-[0.98]">
+<div class="w-20 h-20 flex-shrink-0 rounded-xl overflow-hidden">
+<img alt="Cañón del Combeima" class="w-full h-full object-cover" data-alt="Aerial view of lush Colombian green canyon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBSR0qdzD-8764XmB9ufdM8YfUiWqL3E1Fi_-wxkRoBuwnVyxjHABtT0SfSrR9RGKrEc7OWc68gCufmgmO2EbBeprf8ynpu2D2tA-e8Zy2SxBHuTfAsowUQpVWh-C-QNnzucSWH1Ibyjd_Q4gFDFE4udmHcA7AtCF2Q0OZhzKApkduaA211eKL1RWWZhqAjO8i04Zdl116PamrJAmyeW0uTuuM9odvEwd9TIHc5KboPlWfTY56eR_Y8dgnKPEsEKJqxgWpgPNvzZw"/>
+</div>
+<div class="flex-grow min-w-0">
+<h3 class="font-bold text-lg truncate mb-1">Cañón del Combeima</h3>
+<div class="flex items-center gap-2 mb-2">
+<span class="text-on-surface-variant text-xs font-medium uppercase tracking-wider">Aventura • 12km</span>
+</div>
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-secondary-fixed text-on-secondary-fixed shadow-[0_0_10px_rgba(63,254,160,0.3)]">
+                        20% OFF
+                    </span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant/40">chevron_right</span>
+</div>
+<!-- Card 2 -->
+<div class="glass-card p-3 rounded-lg flex items-center gap-4 transition-all duration-300 active:scale-[0.98]">
+<div class="w-20 h-20 flex-shrink-0 rounded-xl overflow-hidden">
+<img alt="Pueblo de Juntas" class="w-full h-full object-cover" data-alt="Traditional colorful Colombian village street houses" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAoNuRQ1aelp7i58SJR2AroMu-nF0Dl8WM6M8DB26noCTx1xPgZYX-o1HyiIr0cIsDrfK3ousEtDXShfWb1MreXqqjW7AVk8A0MjjvGpZ4ct3EJsyw_dw3leDaES5Dzwx7LOpmnU_4XKP8ZJtNRJSjIhpHSBA3Pqc84D2iQSdEoYielDFPT8LWbJeGu0KjfA10paImm51lRcJ75pl9MXOgeiE5oH_wVd-zQfioSS7yP0-1mGP5vYsuS2pBT1N9I59dzqVg2H2YZgw"/>
+</div>
+<div class="flex-grow min-w-0">
+<h3 class="font-bold text-lg truncate mb-1">Pueblo de Juntas</h3>
+<div class="flex items-center gap-2 mb-2">
+<span class="text-on-surface-variant text-xs font-medium uppercase tracking-wider">Cultura • 14km</span>
+</div>
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-secondary-fixed text-on-secondary-fixed shadow-[0_0_10px_rgba(63,254,160,0.3)]">
+                        15% OFF
+                    </span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant/40">chevron_right</span>
+</div>
+<!-- Card 3 -->
+<div class="glass-card p-3 rounded-lg flex items-center gap-4 transition-all duration-300 active:scale-[0.98]">
+<div class="w-20 h-20 flex-shrink-0 rounded-xl overflow-hidden">
+<img alt="El Totumo" class="w-full h-full object-cover" data-alt="Serene natural pool reflecting blue sky" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDC0adEVle4AtE7621qVLrvD4DPjFMdUvvUDG7k6NJTy6y9lk_4JZU5hOlqNqmbDUkCA_yURBl64IkzkCMhvokbwdKTiou4V4Ar0rvUdrHBNv0bSdXI22RYEZ4pZucspnld72nOji3qEAkkKupeIsuYsXD9GiDcX_LHQZ0rQdtfLR70eMrklTx6B9DcYf3NeIF1Sc0utWsCP8fxZJ8VTDUOgQHI9UWOTAiUq4TRpytK1HmheEHM9nZqaYLaQcf0rx1MjXs0YyI1tw"/>
+</div>
+<div class="flex-grow min-w-0">
+<h3 class="font-bold text-lg truncate mb-1">El Totumo</h3>
+<div class="flex items-center gap-2 mb-2">
+<span class="text-on-surface-variant text-xs font-medium uppercase tracking-wider">Relax • 8km</span>
+</div>
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-secondary-fixed text-on-secondary-fixed shadow-[0_0_10px_rgba(63,254,160,0.3)]">
+                        25% OFF
+                    </span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant/40">chevron_right</span>
+</div>
+<!-- Card 4 -->
+<div class="glass-card p-3 rounded-lg flex items-center gap-4 transition-all duration-300 active:scale-[0.98]">
+<div class="w-20 h-20 flex-shrink-0 rounded-xl overflow-hidden">
+<img alt="Villa Restrepo" class="w-full h-full object-cover" data-alt="Gourmet dish served in rustic setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDZqKQYfK-jQr1Y6Ham7jR0sy3EKf2iazfQuoBpyE8X94X-CcNkaVJJPZjQKsBl0MAoRIV87qVLxGTZV5P5oApZ_s-4SdA2_smLEaxn1CDA81l0xo0Tzj74V0gFrQZ4dN0ilBgr_yQCYgbjAiRLkG_wKdid04b8SqQgmXj6QL1vZgkhSywDZPyN3uESlh7PmrkcrMczkPZjTvO6dq5rMd4YQWfu9r8pJOwTe6PQj4um2O9G1kcb-n15DMidynNwYAjYbTdjXKAv4g"/>
+</div>
+<div class="flex-grow min-w-0">
+<h3 class="font-bold text-lg truncate mb-1">Villa Restrepo</h3>
+<div class="flex items-center gap-2 mb-2">
+<span class="text-on-surface-variant text-xs font-medium uppercase tracking-wider">Gastronomía • 10km</span>
+</div>
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-secondary-fixed text-on-secondary-fixed shadow-[0_0_10px_rgba(63,254,160,0.3)]">
+                        10% OFF
+                    </span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant/40">chevron_right</span>
+</div>
+<!-- Card 5 -->
+<div class="glass-card p-3 rounded-lg flex items-center gap-4 transition-all duration-300 active:scale-[0.98]">
+<div class="w-20 h-20 flex-shrink-0 rounded-xl overflow-hidden">
+<img alt="Finca El Cafetal" class="w-full h-full object-cover" data-alt="Close up of fresh coffee beans" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCjPeo27Mm69nEuJCtXfJaqlrL_HZDNJAzu1xewd3OlEXJVUjzm-rSslnJBMrtZ9Fw8J5mxrFfxs6MYBkh-bj-gyg3mGoImQYaQZNfKQzoZQrJWMXll_VmIxdUBerEQGByNXnB-4VJq-YI4MFbfQj2B9kLnS18dUxAxNdmhjPJF305x7hVmEViVer9cyUEzTtiUg4Qv7MMgjwdimNlRjOHkP3oOVO0HXTKhIni6FUttkFH6oO7aSgnIUIBOU-lGBlrU6b7k0XGOag"/>
+</div>
+<div class="flex-grow min-w-0">
+<h3 class="font-bold text-lg truncate mb-1">Finca El Cafetal</h3>
+<div class="flex items-center gap-2 mb-2">
+<span class="text-on-surface-variant text-xs font-medium uppercase tracking-wider">Coffee • 11km</span>
+</div>
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-secondary-fixed text-on-secondary-fixed shadow-[0_0_10px_rgba(63,254,160,0.3)]">
+                        20% OFF
+                    </span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant/40">chevron_right</span>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-8 left-1/2 -translate-x-1/2 flex justify-around items-center px-4 py-2 z-50 bg-zinc-900/70 backdrop-blur-2xl w-[90%] max-w-md rounded-full border border-white/10 shadow-[0px_12px_32px_0px_rgba(255,133,34,0.15)]">
+<button class="flex items-center justify-center bg-orange-500/20 text-orange-500 rounded-full p-3 shadow-[0_0_15px_rgba(255,133,34,0.3)] active:scale-90 duration-300">
+<span class="material-symbols-outlined">grid_view</span>
+</button>
+<button class="flex items-center justify-center text-zinc-500 p-3 hover:text-emerald-400 transition-colors active:scale-90 duration-300">
+<span class="material-symbols-outlined">local_fire_department</span>
+</button>
+<button class="flex items-center justify-center text-zinc-500 p-3 hover:text-emerald-400 transition-colors active:scale-90 duration-300">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+</nav>
+</body></html>

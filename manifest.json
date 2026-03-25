@@ -1,0 +1,21 @@
+{
+  "name": "TURUT Nightlife",
+  "short_name": "TURUT",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#050505",
+  "theme_color": "#050505",
+  "description": "Explora y vive la noche premium en Ibagué.",
+  "icons": [
+    {
+      "src": "assets/rutaguardian_1774332493934.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/rutaguardian_1774332493934.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

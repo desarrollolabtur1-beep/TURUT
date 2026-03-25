@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@800&amp;family=Manrope:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-primary-fixed-variant": "#512400",
+              "tertiary-container": "#3ffea0",
+              "surface-container-highest": "#262627",
+              "surface-container-low": "#131314",
+              "error": "#ff7351",
+              "tertiary-fixed": "#3ffea0",
+              "surface-container": "#19191b",
+              "primary-container": "#f8801c",
+              "on-background": "#ffffff",
+              "on-surface-variant": "#adaaab",
+              "primary-fixed": "#ff8522",
+              "surface-tint": "#ff9243",
+              "tertiary-fixed-dim": "#24ef93",
+              "on-secondary": "#4e2900",
+              "primary": "#ff9243",
+              "primary-dim": "#f47d18",
+              "surface-bright": "#2c2c2d",
+              "inverse-surface": "#fcf8f9",
+              "surface-container-lowest": "#000000",
+              "secondary-container": "#8d4f00",
+              "on-error-container": "#ffd2c8",
+              "on-tertiary-fixed-variant": "#00673c",
+              "on-tertiary": "#00663b",
+              "on-error": "#450900",
+              "primary-fixed-dim": "#ee7811",
+              "error-dim": "#d53d18",
+              "error-container": "#b92902",
+              "tertiary-dim": "#24ef93",
+              "inverse-primary": "#984900",
+              "secondary": "#ff9c31",
+              "outline-variant": "#484849",
+              "surface": "#0e0e0f",
+              "on-tertiary-fixed": "#004828",
+              "inverse-on-surface": "#565556",
+              "on-secondary-fixed": "#512b00",
+              "surface-variant": "#262627",
+              "on-secondary-container": "#fff6f1",
+              "on-surface": "#ffffff",
+              "secondary-dim": "#ee8f23",
+              "on-tertiary-container": "#005d35",
+              "on-primary-container": "#3c1900",
+              "on-primary": "#4e2200",
+              "tertiary": "#b2ffcb",
+              "secondary-fixed-dim": "#ffb46d",
+              "secondary-fixed": "#ffc795",
+              "outline": "#767576",
+              "surface-dim": "#0e0e0f",
+              "on-secondary-fixed-variant": "#794300",
+              "surface-container-high": "#1f1f21",
+              "background": "#0e0e0f",
+              "on-primary-fixed": "#100300"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Manrope"],
+              "label": ["Manrope"]
+            },
+            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      .glass-card {
+        background: rgba(38, 38, 39, 0.4);
+        backdrop-filter: blur(16px);
+      }
+      .neon-glow {
+        box-shadow: 0 0 40px -5px rgba(255, 146, 67, 0.3);
+      }
+      .primary-gradient {
+        background: linear-gradient(135deg, #ff9243 0%, #f8801c 100%);
+      }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface font-body selection:bg-primary selection:text-on-primary">
+<!-- TopAppBar -->
+<header class="flex justify-between items-center px-6 py-4 w-full fixed top-0 z-50 bg-transparent backdrop-blur-xl shadow-[0_10px_30px_-15px_rgba(255,133,34,0.1)]">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary/20">
+<img alt="User Avatar" class="w-full h-full object-cover" data-alt="Portrait of a smiling young male user" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDB_Q6MbQG8su-Q2lMr8cNcpoZIK3wSuvprTWWgoTaVMKMkJjlmbubcc0yaZ8z9Y7-htgYvbpH5b0_C96USsqyf3_F_BhuDCDYFr7lxXNyV8Dy0eHY2VMd5CXNZJF9Qf9_bLNTHHS0zpLJpAreV8TWBq2SMWYaiwprA8jgQZsl54uF-jrYrbvAo-0MWzzOc191paaH9ezRx_iQhL2yjAgOIa5HfTqDMGR_ItHbAxpCPAdGPhZjndyrZx4L1aRaD5XZ9FesVPlIjPg"/>
+</div>
+<h1 class="font-['Plus_Jakarta_Sans'] font-extrabold text-2xl tracking-tighter text-orange-500 dark:text-orange-400">Wohin</h1>
+</div>
+<button class="text-gray-400 hover:opacity-80 transition-opacity active:scale-95 duration-200">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+</header>
+<main class="min-h-screen flex flex-col items-center justify-center pt-24 pb-32 px-6">
+<!-- Discovery Glow Card (3:4 Portrait) -->
+<div class="relative w-full max-w-[350px] aspect-[3/4] rounded-lg overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] bg-surface-container-high group">
+<!-- Background Image -->
+<img alt="Combeima Canyon" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="Stunning sunset view of Colombian mountain canyon with lush greenery" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCot6wnjw2BG5FE8DU8Kjnh5xYiCa3zUuRNPDOHp3_XLlx0x2ckZPEQg2bzl9vEGwRu2ywHrRu7nw5DEHe_nSUN7NbjZg4vcq5lA8Y3OFBFPHq4iACyz11QVYFucVuwk1hni-zH7WpEZsD24U2g9UdisHKAvLWmZ9YRykmK8QuvP5oSmONaUNfjZadPfsHDBcB9O6d39AXs2390RsBbCUeKboE6Rr_311fEPkd8KAAkxUQy9CELW6sbMVhOMrVS1lF8Dd8pS9AjXQ"/>
+<!-- Timer Chip -->
+<div class="absolute top-4 right-4 flex items-center gap-2 px-3 py-1.5 rounded-full glass-card border border-tertiary-fixed/20 z-10">
+<span class="material-symbols-outlined text-[18px] text-tertiary-fixed" data-icon="schedule">schedule</span>
+<span class="text-tertiary-fixed font-bold text-sm tracking-tight">04:59</span>
+</div>
+<!-- Bottom Gradient Overlay -->
+<div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
+<!-- Content Area -->
+<div class="absolute bottom-0 left-0 right-0 p-8 flex flex-col gap-2">
+<span class="text-tertiary-fixed-dim text-[0.75rem] font-bold tracking-[0.2em] uppercase font-label">AVENTURA</span>
+<h2 class="font-headline font-extrabold text-2xl text-white leading-tight">Sunset at Combeima</h2>
+<div class="flex items-center gap-1.5 text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px]" data-icon="location_on">location_on</span>
+<span class="text-sm font-medium">12km away • Ibagué</span>
+</div>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="flex items-center gap-8 mt-10">
+<!-- Reject Button -->
+<button class="w-[64px] h-[64px] rounded-full border border-outline-variant/30 flex items-center justify-center text-on-surface-variant hover:bg-surface-variant/20 active:scale-90 transition-all">
+<span class="material-symbols-outlined text-3xl" data-icon="close">close</span>
+</button>
+<!-- Match Button -->
+<button class="w-[80px] h-[80px] rounded-full primary-gradient neon-glow flex items-center justify-center text-on-primary-fixed active:scale-95 transition-all">
+<span class="material-symbols-outlined text-4xl" data-icon="favorite" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</button>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 right-0 z-50 flex justify-center pb-8">
+<div class="rounded-full mx-auto mb-6 w-max px-2 py-2 bg-white/5 dark:bg-black/20 backdrop-blur-2xl shadow-[0_0_40px_rgba(255,133,34,0.15)] flex items-center gap-1">
+<a class="flex items-center justify-center bg-orange-500/20 text-orange-400 rounded-full p-3 shadow-[0_0_15px_rgba(255,133,34,0.4)] transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="grid_view">grid_view</span>
+</a>
+<a class="flex items-center justify-center text-gray-500 p-3 hover:text-emerald-400 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="local_fire_department">local_fire_department</span>
+</a>
+<a class="flex items-center justify-center text-gray-500 p-3 hover:text-emerald-400 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</a>
+</div>
+</nav>
+</body></html>
