@@ -1,7 +1,7 @@
 {
   "name": "turut-frontend",
   "version": "1.0.0",
-  "description": "TURUT — Descubre Ibagué de Noche. App móvil + web con React Native (Expo).",
+  "description": "TURUT — ¿ A dónde vamos? App móvil + web con React Native (Expo).",
   "private": true,
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
