@@ -147,13 +147,13 @@ const styles = StyleSheet.create({
     elevation: 60,
   },
   chipsContainer: {
-    marginTop: 0,
+    marginTop: -8,
     marginBottom: -4,
   },
   chipsRow: {
     paddingLeft: 16,
     paddingRight: 16,
-    paddingVertical: 16,
+    paddingVertical: 8,
     gap: 6.4,
   },
   cardPadding: {
