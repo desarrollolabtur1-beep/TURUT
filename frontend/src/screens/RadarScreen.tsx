@@ -17,7 +17,7 @@ import { EventCard } from '../components/cards/EventCard';
 import { SkeletonCard } from '../components/ui/SkeletonCard';
 import { events } from '../data/events';
 import { destinations } from '../data/destinations';
-import { colors, layout } from '../theme';
+import { colors, layout, textStyles } from '../theme';
 
 const LiveDot: React.FC = () => {
   const opacity = useSharedValue(1);
@@ -62,7 +62,7 @@ const RadarScreen: React.FC = () => {
             <TurutHeader />
             <View style={styles.headerRow}>
               <LiveDot />
-              <Text style={styles.title}>¿Qué está pasando ahora?</Text>
+              <Text style={[textStyles.headlineLarge, styles.title]}>¿Qué está pasando ahora?</Text>
             </View>
           </>
         }
@@ -119,11 +119,10 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
   },
   title: {
-    fontFamily: 'Montserrat-ExtraBold',
-    fontSize: 28,
-    color: colors.white,
-    fontWeight: '800',
-    letterSpacing: -0.3,
+    color: colors.textPrimary,
+    textShadowColor: colors.primaryGlow,
+    textShadowOffset: { width: 0, height: 4 },
+    textShadowRadius: 12,
   },
   cardPadding: {
     paddingHorizontal: layout.screenPadding,

@@ -72,13 +72,13 @@ export const textStyles: Record<string, TextStyle> = {
   },
   headlineLarge: {
     fontFamily: webFallback('Montserrat-ExtraBold', 'Montserrat, sans-serif'),
-    fontSize: 32,
+    fontSize: 24,
     fontWeight: '800',
     letterSpacing: -0.5,
   },
   headlineMedium: {
     fontFamily: webFallback('Montserrat-ExtraBold', 'Montserrat, sans-serif'),
-    fontSize: 24,
+    fontSize: 18,
     fontWeight: '800',
     letterSpacing: -0.5,
   },

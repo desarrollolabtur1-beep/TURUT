@@ -12,7 +12,7 @@ import { SwipeContainer } from '../components/swipe/SwipeContainer';
 import { SwipeControls } from '../components/swipe/SwipeControls';
 import { destinations } from '../data/destinations';
 import { useFavorites } from '../store/useFavorites';
-import { colors, textStyles } from '../theme';
+import { colors, textStyles, layout } from '../theme';
 
 const DiscoverScreen: React.FC = () => {
   const insets = useSafeAreaInsets();
@@ -68,10 +68,11 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
   titleContainer: {
-    marginTop: 12,
-    marginBottom: 4,
+    marginTop: 0,
+    marginBottom: 8,
     alignItems: 'center',
     paddingHorizontal: 20,
+    zIndex: 60,
   },
   titleText: {
     color: colors.textPrimary,
@@ -83,8 +84,8 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
-    paddingBottom: 110,
+    justifyContent: 'space-evenly',
+    paddingBottom: layout.bottomNavHeight + 20,
   },
 });
 

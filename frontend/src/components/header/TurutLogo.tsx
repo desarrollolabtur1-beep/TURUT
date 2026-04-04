@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
   mainText: {
     fontFamily: 'Orbitron-Black',
     fontWeight: '900', // Orbitron se ve increíble en Black (900)
-    fontSize: 52, 
+    fontSize: 39, 
     color: '#F8F0FF', 
     letterSpacing: 4,
     ...Platform.select({
@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
   },
   scriptS: {
     fontFamily: 'GreatVibes-Regular',
-    fontSize: 34,
+    fontSize: 26,
     color: '#D4AF37', // Dorado clásico
     marginTop: 15,
     marginHorizontal: 2,

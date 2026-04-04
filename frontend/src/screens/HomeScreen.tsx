@@ -133,10 +133,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
+    justifyContent: 'space-between',
   },
   titleText: {
     paddingHorizontal: layout.screenPadding,
-    marginTop: -20,
+    marginTop: -24,
     marginBottom: 16,
     color: colors.textPrimary,
     textShadowColor: colors.primaryGlow,
@@ -146,11 +147,12 @@ const styles = StyleSheet.create({
     elevation: 60,
   },
   chipsContainer: {
-    marginTop: -8,
+    marginTop: 0,
     marginBottom: -4,
   },
   chipsRow: {
-    paddingHorizontal: layout.screenPadding,
+    paddingLeft: 16,
+    paddingRight: 16,
     paddingVertical: 16,
     gap: 6.4,
   },

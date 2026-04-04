@@ -61,6 +61,9 @@ const styles = StyleSheet.create({
   btn: {
     alignItems: 'center',
     gap: 6,
+    position: 'relative',
+    zIndex: 100,
+    top: -8,
   },
   iconWrapper: {
     width: 52,
@@ -92,6 +95,9 @@ const styles = StyleSheet.create({
     fontSize: 14.4,
     fontWeight: '600',
     letterSpacing: 0.3,
+    opacity: 1,
+    position: 'relative',
+    zIndex: 100,
   },
   rejectLabel: {
     color: colors.primary,

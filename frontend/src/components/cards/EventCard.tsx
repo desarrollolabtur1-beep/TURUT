@@ -67,8 +67,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 16,
-    padding: 16,
-    borderRadius: radii.xl,
+    padding: 20,
+    borderRadius: 20,
   },
   iconBox: {
     width: 44,

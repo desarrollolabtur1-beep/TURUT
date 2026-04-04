@@ -21,9 +21,9 @@ import type { Destination } from '../../data/destinations';
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 const SWIPE_THRESHOLD = 80;
 
-// Explicit card dimensions — aspectRatio doesn't work reliably on RN Web
-const CARD_WIDTH = Math.min(SCREEN_WIDTH * 0.78, 300);
-const CARD_HEIGHT = Math.min(CARD_WIDTH * 1.15, SCREEN_HEIGHT * 0.30);
+const CARD_WIDTH = Math.min(SCREEN_WIDTH * 0.85, 360);
+const AVAILABLE_HEIGHT = SCREEN_HEIGHT - 400;
+const CARD_HEIGHT = Math.min(CARD_WIDTH * 1.05, Math.max(AVAILABLE_HEIGHT, 300));
 
 interface SwipeContainerProps {
   destination: Destination;

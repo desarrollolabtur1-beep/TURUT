@@ -5,6 +5,7 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
+import { LinearGradient } from 'expo-linear-gradient';
 import Svg, { Path, Circle } from 'react-native-svg';
 import { colors, shadows, radii } from '../../theme';
 import type { Destination } from '../../data/destinations';
@@ -59,7 +60,10 @@ export const ImperdibleCard: React.FC<ImperdibleCardProps> = ({
         </TouchableOpacity>
 
         {/* Content */}
-        <View style={styles.content}>
+        <LinearGradient 
+          colors={['transparent', 'rgba(0,0,0,0.8)', 'rgba(0,0,0,0.95)']} 
+          style={styles.content}
+        >
           <View style={styles.info}>
             <View style={styles.nameRow}>
               <Text style={styles.name} numberOfLines={1}>
@@ -76,7 +80,7 @@ export const ImperdibleCard: React.FC<ImperdibleCardProps> = ({
           <View style={styles.pinBtn}>
             <MapPinSmall />
           </View>
-        </View>
+        </LinearGradient>
       </TouchableOpacity>
     </Animated.View>
   );
@@ -86,9 +90,9 @@ const styles = StyleSheet.create({
   card: {
     position: 'relative',
     height: 200,
-    borderRadius: radii.card,
+    borderRadius: 20,
     overflow: 'hidden',
-    marginBottom: 16,
+    marginBottom: 24,
     ...shadows.card,
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.05)',
@@ -109,8 +113,6 @@ const styles = StyleSheet.create({
     opacity: 1,
     // Fallback: dark overlay from bottom
     borderRadius: 0,
-    // We'll layer a dark bottom gradient
-    backgroundGradient: undefined,
   },
   bookmark: {
     position: 'absolute',
@@ -146,8 +148,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-end',
-    // Dark gradient effect from bottom
-    backgroundColor: 'rgba(5,5,5,0.7)',
   },
   info: {
     flex: 1,

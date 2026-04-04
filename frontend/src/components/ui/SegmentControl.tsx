@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
   },
   btn: {
     flex: 1,
-    paddingVertical: 9.6,
+    paddingVertical: 6,
     paddingHorizontal: 3.2,
     borderRadius: radii.full,
     alignItems: 'center',
