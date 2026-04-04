@@ -3,7 +3,7 @@
  */
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import Animated, {
   useSharedValue,
@@ -39,7 +39,6 @@ const LiveDot: React.FC = () => {
 };
 
 const RadarScreen: React.FC = () => {
-  const insets = useSafeAreaInsets();
   const navigation = useNavigation<any>();
   const [loading, setLoading] = useState(true);
 
@@ -53,7 +52,7 @@ const RadarScreen: React.FC = () => {
   };
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
+    <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
       <FlatList
         data={loading ? [] : events}
         keyExtractor={(_, i) => i.toString()}
@@ -91,20 +90,20 @@ const RadarScreen: React.FC = () => {
         showsVerticalScrollIndicator={false}
         ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
       />
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: '#050505', // full bleed color
   },
   headerRow: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: layout.screenPadding,
-    paddingTop: 24,
+    paddingTop: 16,
     marginBottom: 24,
   },
   liveDot: {

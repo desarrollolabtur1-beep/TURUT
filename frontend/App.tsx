@@ -56,30 +56,16 @@ const App: React.FC = () => {
 const styles = StyleSheet.create({
   flex1: {
     flex: 1,
+    backgroundColor: '#0a0a0a',
   },
   webContainer: {
     flex: 1,
     backgroundColor: '#0a0a0a',
-    alignItems: 'center',
-    justifyContent: 'center',
-    ...(Platform.OS === 'web' ? {
-      height: '100vh' as any,
-      paddingVertical: 20,
-    } : {}),
   },
   root: {
     flex: 1,
     backgroundColor: colors.background,
     width: '100%',
-    ...(Platform.OS === 'web' ? {
-      maxWidth: 414,
-      maxHeight: 896,
-      height: '100%',
-      borderWidth: 8,
-      borderColor: '#1a1a1a',
-      borderRadius: 40,
-      overflow: 'hidden',
-    } : {}),
   },
   loading: {
     flex: 1,
@@ -87,15 +73,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
-    ...(Platform.OS === 'web' ? {
-      maxWidth: 414,
-      maxHeight: 896,
-      height: '100%',
-      borderWidth: 8,
-      borderColor: '#1a1a1a',
-      borderRadius: 40,
-      overflow: 'hidden',
-    } : {}),
   },
   loadingText: {
     color: colors.primary,

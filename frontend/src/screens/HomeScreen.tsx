@@ -4,7 +4,7 @@
  */
 import React, { useState, useMemo, useCallback } from 'react';
 import { View, Text, FlatList, ScrollView, StyleSheet } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { TurutHeader } from '../components/header/TurutHeader';
 import { SegmentControl } from '../components/ui/SegmentControl';
@@ -18,7 +18,6 @@ import { colors, layout, textStyles } from '../theme';
 type SegmentTab = 'top5' | 'miruta';
 
 const HomeScreen: React.FC = () => {
-  const insets = useSafeAreaInsets();
   const navigation = useNavigation<any>();
   const { isFavorite, toggleFavorite, getCombinedIds, loaded } = useFavorites();
 
@@ -62,7 +61,7 @@ const HomeScreen: React.FC = () => {
   );
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
+    <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
       <FlatList
         data={loaded ? filteredData : []}
         keyExtractor={(item) => item.id.toString()}
@@ -125,20 +124,20 @@ const HomeScreen: React.FC = () => {
         contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}
       />
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: '#050505', // Using pure dark for full bleed
     justifyContent: 'space-between',
   },
   titleText: {
     paddingHorizontal: layout.screenPadding,
-    marginTop: -24,
-    marginBottom: 16,
+    marginTop: 8,
+    marginBottom: 24,
     color: colors.textPrimary,
     textShadowColor: colors.primaryGlow,
     textShadowOffset: { width: 0, height: 4 },
@@ -147,17 +146,17 @@ const styles = StyleSheet.create({
     elevation: 60,
   },
   chipsContainer: {
-    marginTop: -8,
-    marginBottom: -4,
+    marginTop: 16,
+    marginBottom: 16,
   },
   chipsRow: {
-    paddingLeft: 16,
-    paddingRight: 16,
+    paddingHorizontal: 24,
     paddingVertical: 8,
-    gap: 6.4,
+    gap: 8,
   },
   cardPadding: {
     paddingHorizontal: layout.screenPadding,
+    paddingBottom: 16,
   },
   listContent: {
     paddingBottom: layout.bottomNavHeight + 32,

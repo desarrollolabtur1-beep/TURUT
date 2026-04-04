@@ -100,9 +100,9 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     zIndex: 50,
-    paddingTop: 20,
+    paddingTop: 16,
     position: 'relative',
-    paddingBottom: 35,
+    paddingBottom: 32,
   },
   noiseOverlay: {
     ...StyleSheet.absoluteFillObject,
@@ -114,17 +114,17 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   headerContent: {
-    paddingHorizontal: 28,
-    paddingBottom: 12,
+    paddingHorizontal: 24,
+    paddingBottom: 16,
   },
   logoArea: {
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
-    marginTop: -8,       // Empuja todo el logo hacia arriba
-    marginBottom: 5,     // Reduce espacio entre logo e infoBar
-    paddingTop: 5,       // Reducido desde 15
-    paddingBottom: 5,    // Reducido desde 15
+    marginTop: 8,
+    marginBottom: 16,
+    paddingTop: 8,
+    paddingBottom: 8,
   },
   outerNeonGlow: {
     position: 'absolute',
@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     width: '100%',
-    marginTop: 12,
+    marginTop: 16,
   },
   infoLeft: {
     flexDirection: 'row',

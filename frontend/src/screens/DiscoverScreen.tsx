@@ -4,7 +4,7 @@
  */
 import React, { useMemo, useCallback } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { TurutHeader } from '../components/header/TurutHeader';
@@ -15,7 +15,6 @@ import { useFavorites } from '../store/useFavorites';
 import { colors, textStyles, layout } from '../theme';
 
 const DiscoverScreen: React.FC = () => {
-  const insets = useSafeAreaInsets();
   const navigation = useNavigation<any>();
   const { swipePosition, advanceSwipe, addMatch } = useFavorites();
 
@@ -33,31 +32,33 @@ const DiscoverScreen: React.FC = () => {
   }, [addMatch, advanceSwipe, currentIndex, navigation]);
 
   return (
-    <GestureHandlerRootView style={[styles.container, { paddingTop: insets.top }]}>
-      <TurutHeader />
+    <GestureHandlerRootView style={styles.container}>
+      <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
+        <TurutHeader />
       
-      <View style={styles.titleContainer}>
-        <Text style={[textStyles.headlineLarge, styles.titleText]}>
-          ¿A dónde vamos?
-        </Text>
-      </View>
+        <View style={styles.titleContainer}>
+          <Text style={[textStyles.headlineLarge, styles.titleText]}>
+            ¿A dónde vamos?
+          </Text>
+        </View>
 
-      <View style={styles.content}>
-        {/* Swipe Card */}
-        <SwipeContainer
-          destination={currentDest}
-          currentIndex={currentIndex}
-          total={destinations.length}
-          onSwipeLeft={handleSwipeLeft}
-          onSwipeRight={handleSwipeRight}
-        />
+        <View style={styles.content}>
+          {/* Swipe Card */}
+          <SwipeContainer
+            destination={currentDest}
+            currentIndex={currentIndex}
+            total={destinations.length}
+            onSwipeLeft={handleSwipeLeft}
+            onSwipeRight={handleSwipeRight}
+          />
 
-        {/* Controls */}
-        <SwipeControls
-          onReject={handleSwipeLeft}
-          onMatch={handleSwipeRight}
-        />
-      </View>
+          {/* Controls */}
+          <SwipeControls
+            onReject={handleSwipeLeft}
+            onMatch={handleSwipeRight}
+          />
+        </View>
+      </SafeAreaView>
     </GestureHandlerRootView>
   );
 };
@@ -65,13 +66,16 @@ const DiscoverScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: '#050505', // Ensures true dark bleed
+  },
+  safeArea: {
+    flex: 1,
   },
   titleContainer: {
-    marginTop: 0,
-    marginBottom: 8,
+    marginTop: 8,
+    marginBottom: 16,
     alignItems: 'center',
-    paddingHorizontal: 20,
+    paddingHorizontal: 24,
     zIndex: 60,
   },
   titleText: {
@@ -85,7 +89,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'space-evenly',
-    paddingBottom: layout.bottomNavHeight + 20,
+    paddingBottom: layout.bottomNavHeight + 24, // multiple of 8
   },
 });
 
