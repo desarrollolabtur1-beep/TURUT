@@ -148,6 +148,7 @@ const MainTabs: React.FC = () => {
 
   return (
     <Tab.Navigator
+      initialRouteName="Tu Ruta"
       screenOptions={{
         headerShown: false,
         tabBarLabelPosition: 'below-icon',
