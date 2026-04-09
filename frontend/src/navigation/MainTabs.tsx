@@ -6,15 +6,71 @@
  */
 import React from 'react';
 import { View, Text, StyleSheet, Platform } from 'react-native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createBottomTabNavigator, BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Path, Circle, Line, Rect, G } from 'react-native-svg';
 import HomeScreen from '../screens/HomeScreen';
 import DiscoverScreen from '../screens/DiscoverScreen';
 import RadarScreen from '../screens/RadarScreen';
-import { colors, shadows } from '../theme';
+import { colors, shadows, layout } from '../theme';
 
 const Tab = createBottomTabNavigator();
+
+const isWeb = Platform.OS === 'web';
+
+const CustomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigation }) => {
+  return (
+    <View style={isWeb ? styles.webTabBarContainer : styles.tabBarContainer}>
+      <View style={[styles.tabBar, isWeb && styles.webTabBar]}>
+        {state.routes.map((route, index) => {
+          const { options } = descriptors[route.key];
+          const label = options.tabBarLabel !== undefined
+            ? String(options.tabBarLabel)
+            : options.title !== undefined
+              ? options.title
+              : route.name;
+
+          const isFocused = state.index === index;
+
+          const onPress = () => {
+            const event = navigation.emit({
+              type: 'tabPress',
+              target: route.key,
+              canPreventDefault: true,
+            });
+
+            if (!isFocused && !event.defaultPrevented) {
+              navigation.navigate(route.name);
+            }
+          };
+
+          const icon = route.name === 'Imperdibles'
+            ? <StarIcon color="rgba(255,255,255,0.35)" size={22} active={isFocused} />
+            : route.name === 'Tu Ruta'
+              ? <CardsIcon color="rgba(255,255,255,0.35)" size={22} active={isFocused} />
+              : <RadarIcon color="rgba(255,255,255,0.35)" size={22} active={isFocused} />;
+
+          return (
+            <View key={route.key} style={styles.tabItem}>
+              <View
+                style={[styles.tabButton, isFocused && styles.tabButtonActive]}
+                onTouchEnd={onPress}
+              >
+                {icon}
+                {isFocused && (
+                  <View style={styles.activeLabelContainer}>
+                    <Text style={styles.labelActivePurple}>{String(label)}</Text>
+                    <View style={styles.activeDot} />
+                  </View>
+                )}
+              </View>
+            </View>
+          );
+        })}
+      </View>
+    </View>
+  );
+};
 
 /* ── SVG Icons matching the PWA ── */
 
@@ -95,6 +151,7 @@ const MainTabs: React.FC = () => {
       screenOptions={{
         headerShown: false,
         tabBarLabelPosition: 'below-icon',
+        tabBar: (props) => <CustomTabBar {...props} />,
         tabBarStyle: {
           position: 'absolute',
           bottom: Math.max(insets.bottom, 16) + 8,
@@ -110,7 +167,7 @@ const MainTabs: React.FC = () => {
           paddingBottom: 0,
           paddingTop: 0,
           ...shadows.nav,
-          ...(Platform.OS === 'web'
+          ...(isWeb
             ? ({
                 backdropFilter: 'blur(30px) saturate(2)',
                 WebkitBackdropFilter: 'blur(30px) saturate(2)',
@@ -203,6 +260,42 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.8,
     shadowRadius: 4,
     elevation: 2,
+  },
+  tabBarContainer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+  },
+  webTabBarContainer: {
+    position: 'relative',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+  },
+  tabBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+  },
+  webTabBar: {
+    width: '100%',
+    maxWidth: layout.mobileMaxWidth,
+    alignSelf: 'center',
+  },
+  tabItem: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  tabButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+  },
+  tabButtonActive: {
+    transform: [{ scale: 1.05 }],
   },
 });
 

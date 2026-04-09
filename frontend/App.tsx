@@ -3,20 +3,22 @@
  * Loads fonts, shows splash screen, then renders the app
  */
 import React from 'react';
-import { View, Text, ActivityIndicator, StyleSheet, StatusBar, Platform } from 'react-native';
+import { View, Text, ActivityIndicator, StyleSheet, StatusBar, Platform, Dimensions } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import AppNavigator from './src/navigation/AppNavigator';
 import { useLoadFonts } from './src/hooks/useLoadFonts';
 import { colors } from './src/theme';
+import { layout } from './src/theme/spacing';
 
 const App: React.FC = () => {
   const fontsLoaded = useLoadFonts();
+  const isWeb = Platform.OS === 'web';
+  const { width: screenWidth } = Dimensions.get('window');
 
-  // Inject dark background for web
   React.useEffect(() => {
-    if (Platform.OS === 'web' && typeof document !== 'undefined') {
-      document.body.style.backgroundColor = '#0a0a0a';
+    if (isWeb && typeof document !== 'undefined') {
+      document.body.style.backgroundColor = colors.black;
       document.body.style.margin = '0';
       document.body.style.padding = '0';
       document.body.style.overflow = 'hidden';
@@ -24,43 +26,52 @@ const App: React.FC = () => {
       if (root) {
         root.style.height = '100vh';
         root.style.width = '100vw';
-        root.style.backgroundColor = '#0a0a0a';
+        root.style.backgroundColor = colors.black;
       }
     }
-  }, []);
+  }, [isWeb]);
 
   if (!fontsLoaded) {
     return (
-      <View style={Platform.OS === 'web' ? styles.webContainer : undefined}>
-        <View style={styles.loading}>
-          <StatusBar barStyle="light-content" backgroundColor={colors.background} />
-          <ActivityIndicator size="large" color={colors.primary} />
-          <Text style={styles.loadingText}>Cargando TURUT...</Text>
+      <View style={isWeb ? styles.outerContainer : undefined}>
+        <View style={[styles.innerContainer, isWeb && styles.innerContainerFixed]}>
+          <View style={styles.loading}>
+            <StatusBar barStyle="light-content" backgroundColor={colors.background} />
+            <ActivityIndicator size="large" color={colors.primary} />
+            <Text style={styles.loadingText}>Cargando TURUT...</Text>
+          </View>
         </View>
       </View>
     );
   }
 
   return (
-    <View style={Platform.OS === 'web' ? styles.webContainer : styles.flex1}>
-      <GestureHandlerRootView style={styles.root}>
-        <StatusBar barStyle="light-content" backgroundColor={colors.background} translucent />
-        <SafeAreaProvider>
-          <AppNavigator />
-        </SafeAreaProvider>
-      </GestureHandlerRootView>
+    <View style={styles.outerContainer}>
+      <View style={[styles.innerContainer, isWeb && styles.innerContainerFixed]}>
+        <GestureHandlerRootView style={styles.root}>
+          <StatusBar barStyle="light-content" backgroundColor={colors.background} translucent />
+          <SafeAreaProvider>
+            <AppNavigator />
+          </SafeAreaProvider>
+        </GestureHandlerRootView>
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  flex1: {
+  outerContainer: {
     flex: 1,
-    backgroundColor: '#0a0a0a',
+    backgroundColor: colors.black,
   },
-  webContainer: {
+  innerContainer: {
     flex: 1,
-    backgroundColor: '#0a0a0a',
+    backgroundColor: colors.surface,
+  },
+  innerContainerFixed: {
+    maxWidth: layout.mobileMaxWidth,
+    alignSelf: 'center',
+    width: '100%',
   },
   root: {
     flex: 1,

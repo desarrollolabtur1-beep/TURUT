@@ -27,8 +27,8 @@ export const radii = {
 } as const;
 
 export const layout = {
-  /** Max width for app container (like PWA's 390px) */
-  maxWidth: 390,
+  /** Max width for mobile container on web */
+  mobileMaxWidth: 480,
   /** Standard horizontal padding */
   screenPadding: 24,
   /** Bottom nav height */

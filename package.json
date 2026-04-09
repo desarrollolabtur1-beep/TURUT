@@ -1,0 +1,21 @@
+{
+  "name": "landing-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "scripts.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/desarrollolabtur1-beep/TURUT.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/desarrollolabtur1-beep/TURUT/issues"
+  },
+  "homepage": "https://github.com/desarrollolabtur1-beep/TURUT#readme"
+}
