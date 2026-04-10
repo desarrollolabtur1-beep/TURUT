@@ -38,7 +38,7 @@ export const SwipeControls: React.FC<SwipeControlsProps> = ({ onReject, onMatch 
       </TouchableOpacity>
 
       {/* Match */}
-      <TouchableOpacity style={styles.btn} onPress={onMatch} activeOpacity={0.8}>
+      <TouchableOpacity style={[styles.btn, { marginLeft: 36 }]} onPress={onMatch} activeOpacity={0.8}>
         <View style={[styles.iconWrapper, styles.matchIcon]}>
           <View style={{ color: colors.secondary } as any}>
             <StarIcon />
