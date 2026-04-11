@@ -5,7 +5,7 @@
  * - Inactive tab: icon only, dimmed
  */
 import React from 'react';
-import { View, Text, StyleSheet, Platform } from 'react-native';
+import { View, Text, StyleSheet, Platform, Pressable } from 'react-native';
 import { createBottomTabNavigator, BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Path, Circle, Line, Rect, G } from 'react-native-svg';
@@ -19,8 +19,15 @@ const Tab = createBottomTabNavigator();
 const isWeb = Platform.OS === 'web';
 
 const CustomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigation }) => {
+  const insets = useSafeAreaInsets();
+
   return (
-    <View style={isWeb ? styles.webTabBarContainer : styles.tabBarContainer}>
+    <View
+      style={[
+        isWeb ? styles.webTabBarContainer : styles.tabBarContainer,
+        { bottom: Math.max(insets.bottom, 16) + 8 }
+      ]}
+    >
       <View style={[styles.tabBar, isWeb && styles.webTabBar]}>
         {state.routes.map((route, index) => {
           const { options } = descriptors[route.key];
@@ -52,18 +59,19 @@ const CustomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigat
 
           return (
             <View key={route.key} style={styles.tabItem}>
-              <View
+              <Pressable
                 style={[styles.tabButton, isFocused && styles.tabButtonActive]}
-                onTouchEnd={onPress}
+                onPress={onPress}
+                android_ripple={{ color: 'rgba(255,255,255,0.1)', borderless: true, radius: 24 }}
               >
                 {icon}
                 {isFocused && (
                   <View style={styles.activeLabelContainer}>
-                    <Text style={styles.labelActivePurple}>{String(label)}</Text>
+                    <Text style={styles.labelActivePurple} numberOfLines={1}>{String(label)}</Text>
                     <View style={styles.activeDot} />
                   </View>
                 )}
-              </View>
+              </Pressable>
             </View>
           );
         })}
@@ -149,90 +157,23 @@ const MainTabs: React.FC = () => {
   return (
     <Tab.Navigator
       initialRouteName="Tu Ruta"
+      tabBar={(props) => <CustomTabBar {...props} />}
       screenOptions={{
         headerShown: false,
         tabBarLabelPosition: 'below-icon',
-        tabBar: (props) => <CustomTabBar {...props} />,
-        tabBarStyle: {
-          position: 'absolute',
-          bottom: Math.max(insets.bottom, 16) + 8,
-          left: '5%',
-          right: '5%',
-          height: 64,
-          borderRadius: 9999,
-          backgroundColor: 'rgba(8, 8, 12, 0.85)',
-          borderTopWidth: 1,
-          borderTopColor: 'rgba(255,255,255,0.1)',
-          borderWidth: 1,
-          borderColor: colors.outlineVariant,
-          paddingBottom: 0,
-          paddingTop: 0,
-          ...shadows.nav,
-          ...(isWeb
-            ? ({
-                backdropFilter: 'blur(30px) saturate(2)',
-                WebkitBackdropFilter: 'blur(30px) saturate(2)',
-                width: '90%',
-                maxWidth: 360,
-                alignSelf: 'center',
-                marginHorizontal: 'auto',
-              } as any)
-            : {}),
-        },
-        tabBarActiveTintColor: colors.primary,
-        tabBarInactiveTintColor: 'rgba(255,255,255,0.35)',
-        tabBarIconStyle: {
-          marginBottom: 0,
-        },
       }}
     >
       <Tab.Screen
         name="Imperdibles"
         component={HomeScreen}
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <StarIcon color="rgba(255,255,255,0.35)" size={22} active={focused} />
-          ),
-          tabBarLabel: ({ focused }) =>
-            focused ? (
-              <View style={styles.activeLabelContainer}>
-                <Text style={styles.labelActivePurple}>Imperdibles</Text>
-                <View style={styles.activeDot} />
-              </View>
-            ) : null,
-        }}
       />
       <Tab.Screen
         name="Tu Ruta"
         component={DiscoverScreen}
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <CardsIcon color="rgba(255,255,255,0.35)" size={22} active={focused} />
-          ),
-          tabBarLabel: ({ focused }) =>
-            focused ? (
-              <View style={styles.activeLabelContainer}>
-                <Text style={styles.labelActivePurple}>Tu Ruta</Text>
-                <View style={styles.activeDot} />
-              </View>
-            ) : null,
-        }}
       />
       <Tab.Screen
         name="Radar"
         component={RadarScreen}
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <RadarIcon color="rgba(255,255,255,0.35)" size={22} active={focused} />
-          ),
-          tabBarLabel: ({ focused }) =>
-            focused ? (
-              <View style={styles.activeLabelContainer}>
-                <Text style={styles.labelActivePurple}>Radar</Text>
-                <View style={styles.activeDot} />
-              </View>
-            ) : null,
-        }}
       />
     </Tab.Navigator>
   );
@@ -264,26 +205,36 @@ const styles = StyleSheet.create({
   },
   tabBarContainer: {
     position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
+    left: '5%',
+    right: '5%',
+    ...shadows.nav,
   },
   webTabBarContainer: {
-    position: 'relative',
-    bottom: 0,
-    left: 0,
-    right: 0,
+    position: 'absolute', // Keep relative to screen on web
+    left: '5%',
+    right: '5%',
     alignItems: 'center',
+    ...shadows.nav,
   },
   tabBar: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
+    borderRadius: 9999,
+    backgroundColor: 'rgba(8, 8, 12, 0.90)', // slightly deeper to compensate for removal of blurry native
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(255,255,255,0.1)',
+    borderWidth: 1,
+    borderColor: colors.outlineVariant,
+    minHeight: 64, // Use minHeight instead of fixed height to prevent clipping
+    paddingVertical: 6,
   },
   webTabBar: {
     width: '100%',
-    maxWidth: layout.mobileMaxWidth,
+    maxWidth: 360,
     alignSelf: 'center',
+    backdropFilter: 'blur(30px) saturate(2)' as any,
+    WebkitBackdropFilter: 'blur(30px) saturate(2)' as any,
   },
   tabItem: {
     flex: 1,
