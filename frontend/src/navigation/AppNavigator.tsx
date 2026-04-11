@@ -17,7 +17,11 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const AppNavigator: React.FC = () => {
   return (
-    <NavigationContainer>
+    <NavigationContainer
+      documentTitle={{
+        formatter: () => 'TURUT — ¿ A dónde vamos?',
+      }}
+    >
       <Stack.Navigator
         screenOptions={{
           headerShown: false,
