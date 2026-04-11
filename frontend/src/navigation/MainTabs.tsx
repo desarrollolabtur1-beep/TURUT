@@ -210,10 +210,11 @@ const styles = StyleSheet.create({
     ...shadows.nav,
   },
   webTabBarContainer: {
-    position: 'absolute', // Keep relative to screen on web
+    position: 'fixed' as any, // FIX for 100vh mobile browser scrolling issue
     left: '5%',
     right: '5%',
     alignItems: 'center',
+    zIndex: 9999, // Ensure it stays on top
     ...shadows.nav,
   },
   tabBar: {
