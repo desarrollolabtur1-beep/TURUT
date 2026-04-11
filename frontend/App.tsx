@@ -18,15 +18,47 @@ const App: React.FC = () => {
 
   React.useEffect(() => {
     if (isWeb && typeof document !== 'undefined') {
+      // Base styles
       document.body.style.backgroundColor = colors.black;
       document.body.style.margin = '0';
       document.body.style.padding = '0';
-      document.body.style.overflow = 'hidden';
+      // HYBRID FIX: Allow vertical scroll, block horizontal only
+      document.body.style.overflowX = 'hidden';
+      document.body.style.overflowY = 'auto';
+      // Enable smooth touch scrolling on mobile browsers
+      (document.body.style as any).webkitOverflowScrolling = 'touch';
+      // Prevent pull-to-refresh but allow scroll
+      document.body.style.overscrollBehaviorY = 'contain';
+
       const root = document.getElementById('root');
       if (root) {
-        root.style.height = '100vh';
+        // Use dvh (dynamic viewport height) with vh fallback for mobile browsers
+        root.style.height = '100dvh';
+        root.style.minHeight = '100vh';
         root.style.width = '100vw';
         root.style.backgroundColor = colors.black;
+        root.style.overflowY = 'auto';
+        root.style.overflowX = 'hidden';
+      }
+
+      // Inject global touch-action CSS for gesture coexistence
+      const styleId = 'turut-scroll-fix';
+      if (!document.getElementById(styleId)) {
+        const style = document.createElement('style');
+        style.id = styleId;
+        style.textContent = `
+          /* HYBRID STRATEGY: Allow browser scroll + gesture handler coexistence */
+          html, body, #root {
+            touch-action: pan-y !important;
+            -webkit-overflow-scrolling: touch;
+          }
+          /* Ensure ScrollView containers can scroll vertically */
+          [data-testid="scroll-view"], [role="scrollbar"] {
+            touch-action: pan-y !important;
+            overflow-y: auto !important;
+          }
+        `;
+        document.head.appendChild(style);
       }
     }
   }, [isWeb]);

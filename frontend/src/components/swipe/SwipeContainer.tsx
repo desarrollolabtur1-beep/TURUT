@@ -3,7 +3,7 @@
  * Uses react-native-gesture-handler + reanimated for smooth swipe physics
  */
 import React, { useCallback } from 'react';
-import { View, StyleSheet, Dimensions } from 'react-native';
+import { View, StyleSheet, Dimensions, Platform } from 'react-native';
 import { GestureDetector, Gesture } from 'react-native-gesture-handler';
 import Animated, {
   useSharedValue,
@@ -55,6 +55,9 @@ export const SwipeContainer: React.FC<SwipeContainerProps> = ({
   );
 
   const gesture = Gesture.Pan()
+    // HYBRID FIX: Only activate on horizontal swipes, let vertical scroll through
+    .activeOffsetX([-15, 15])
+    .failOffsetY([-10, 10])
     .onStart(() => {
       isActive.value = true;
     })
@@ -146,6 +149,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-start',
     paddingTop: 8,
+    // HYBRID: Let vertical touch events pass through to parent ScrollView
+    ...(Platform.OS === 'web' ? { touchAction: 'pan-y' } as any : {}),
   },
   cardWrapper: {
     width: CARD_WIDTH,

@@ -3,11 +3,10 @@
  * Tinder-style card swiping for destinations
  */
 import React, { useMemo, useCallback, useRef, useState, useEffect } from 'react';
-import { View, Text, StyleSheet, LayoutChangeEvent } from 'react-native';
+import { View, Text, StyleSheet, LayoutChangeEvent, Platform } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { TurutHeader } from '../components/header/TurutHeader';
 import { SwipeContainer } from '../components/swipe/SwipeContainer';
 import { SwipeControls } from '../components/swipe/SwipeControls';
@@ -51,51 +50,52 @@ const DiscoverScreen: React.FC = () => {
   }, [addMatch, advanceSwipe, currentIndex, navigation]);
 
   return (
-    <GestureHandlerRootView style={styles.container}>
-      <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
-        <ScrollView
-          ref={scrollRef}
-          style={styles.scrollView}
-          contentContainerStyle={styles.scrollContent}
-          showsVerticalScrollIndicator={false}
-          bounces={true}
-        >
-          <View onLayout={handleHeaderLayout}>
-            <TurutHeader />
-          </View>
-        
-          <View style={styles.titleContainer}>
-            <Text style={[textStyles.headlineLarge, styles.titleText]}>
-              ¿A dónde vamos?
-            </Text>
-          </View>
+    <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
+      <ScrollView
+        ref={scrollRef}
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+        bounces={true}
+        nestedScrollEnabled={true}
+        keyboardShouldPersistTaps="handled"
+        // HYBRID: Allow vertical scroll to coexist with horizontal swipe gestures
+        {...(Platform.OS === 'web' ? {
+          dataSet: { testid: 'discover-scroll' },
+        } : {})}
+      >
+        <View onLayout={handleHeaderLayout}>
+          <TurutHeader />
+        </View>
+      
+        <View style={styles.titleContainer}>
+          <Text style={[textStyles.headlineLarge, styles.titleText]}>
+            ¿A dónde vamos?
+          </Text>
+        </View>
 
-          <View style={styles.content}>
-            <SwipeContainer
-              destination={currentDest}
-              currentIndex={currentIndex}
-              total={destinations.length}
-              onSwipeLeft={handleSwipeLeft}
-              onSwipeRight={handleSwipeRight}
-            />
-            <SwipeControls
-              onReject={handleSwipeLeft}
-              onMatch={handleSwipeRight}
-            />
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    </GestureHandlerRootView>
+        <View style={styles.content}>
+          <SwipeContainer
+            destination={currentDest}
+            currentIndex={currentIndex}
+            total={destinations.length}
+            onSwipeLeft={handleSwipeLeft}
+            onSwipeRight={handleSwipeRight}
+          />
+          <SwipeControls
+            onReject={handleSwipeLeft}
+            onMatch={handleSwipeRight}
+          />
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#050505',
-  },
   safeArea: {
     flex: 1,
+    backgroundColor: '#050505',
   },
   scrollView: {
     flex: 1,
@@ -103,6 +103,8 @@ const styles = StyleSheet.create({
   scrollContent: {
     flexGrow: 1,
     paddingBottom: layout.bottomNavHeight + 24,
+    // HYBRID: minHeight ensures content can extend past viewport
+    minHeight: '100%' as any,
   },
   titleContainer: {
     marginTop: 8,
@@ -122,6 +124,8 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'space-evenly',
+    // HYBRID: Allow touch events to pass through to scroll on web
+    ...(Platform.OS === 'web' ? { touchAction: 'pan-y' } as any : {}),
   },
 });
 
