@@ -3,7 +3,8 @@
  * Segmented control, filter chips, and destination cards
  */
 import React, { useState, useMemo, useCallback } from 'react';
-import { View, Text, FlatList, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
+import { FlatList, ScrollView } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { TurutHeader } from '../components/header/TurutHeader';
