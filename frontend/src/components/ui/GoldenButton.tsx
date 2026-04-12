@@ -11,7 +11,7 @@ import Animated, {
   withTiming,
   Easing,
 } from 'react-native-reanimated';
-import { colors, radii } from '../../theme';
+import { colors, radii, textStyles } from '../../theme';
 
 const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
 
@@ -84,8 +84,7 @@ const styles = StyleSheet.create({
     shadowColor: '#34D399',
   },
   label: {
-    fontFamily: 'Montserrat-ExtraBold',
-    fontWeight: '800',
+    ...textStyles.headlineLarge,
     fontSize: 17.6,
     color: colors.onSecondary,
     textTransform: 'uppercase',
