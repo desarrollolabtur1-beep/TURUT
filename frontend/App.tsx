@@ -8,6 +8,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import AppNavigator from './src/navigation/AppNavigator';
 import { useLoadFonts } from './src/hooks/useLoadFonts';
+import { AuthProvider } from './src/context/AuthContext';
 import { colors } from './src/theme';
 import { layout } from './src/theme/spacing';
 
@@ -82,9 +83,11 @@ const App: React.FC = () => {
       <View style={[styles.innerContainer, isWeb && styles.innerContainerFixed]}>
         <GestureHandlerRootView style={styles.root}>
           <StatusBar barStyle="light-content" backgroundColor={colors.background} translucent />
-          <SafeAreaProvider>
-            <AppNavigator />
-          </SafeAreaProvider>
+          <AuthProvider>
+            <SafeAreaProvider>
+              <AppNavigator />
+            </SafeAreaProvider>
+          </AuthProvider>
         </GestureHandlerRootView>
       </View>
     </View>
