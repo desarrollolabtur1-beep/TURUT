@@ -453,7 +453,7 @@ const DiscoverScreen: React.FC = () => {
             <View style={filterStyles.divider} />
 
             <FilterSection
-              title="Nivel"
+              title="Nivel Físico"
               emoji="⚡"
               options={FILTER_OPTIONS.nivel}
               selected={filters.nivel}
