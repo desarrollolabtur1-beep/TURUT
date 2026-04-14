@@ -5,6 +5,19 @@ const API_BASE_URL = __DEV__
   ? 'http://localhost:5000/api'
   : 'https://api.turut.online/api';
 
+// ─── Callback de sesión expirada ─────────────────────────────────────────────
+// AuthContext registra aquí su función logout para que el interceptor pueda
+// limpiar el estado global cuando el backend devuelve 401.
+let _onUnauthorized: (() => void) | null = null;
+
+/**
+ * Registra el callback que se ejecutará cuando el backend devuelva 401.
+ * Llamar desde AuthContext con la función `logout` del contexto.
+ */
+export const setUnauthorizedCallback = (cb: (() => void) | null) => {
+  _onUnauthorized = cb;
+};
+
 // Create axios instance with base URL
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -46,14 +59,12 @@ api.interceptors.response.use(
   (error) => {
     // Handle 401 Unauthorized errors (token expired or invalid)
     if (error.response?.status === 401) {
-      // Clear token and redirect to login (implement based on your navigation setup)
-      // For web
+      // Clear token from localStorage
       if (typeof window !== 'undefined') {
         localStorage.removeItem('token');
-        // In a real app, you would redirect to login page
-        // window.location.href = '/login';
       }
-      // For React Native, you would use navigation prop
+      // Notify AuthContext to clear state → auth guard redirige al Login
+      _onUnauthorized?.();
     }
     return Promise.reject(error);
   }

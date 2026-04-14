@@ -1,15 +1,15 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { authService } from '../services/api.service';
+import { setUnauthorizedCallback } from '../services/api.service';
 
-// Determine storage based on platform
+// ─── Storage adapter (web / React Native) ────────────────────────────────────
+// Web usa localStorage. RN usaría AsyncStorage (importar condicionalmente).
 let storage: {
   getItem: (key: string) => string | null | Promise<string | null>;
   setItem: (key: string, value: string) => void | Promise<void>;
   removeItem: (key: string) => void | Promise<void>;
 };
 
-// For web, use localStorage
-// For React Native, we'll need to use AsyncStorage (will be imported conditionally)
 if (typeof window !== 'undefined') {
   // Web environment
   storage = {
@@ -18,20 +18,33 @@ if (typeof window !== 'undefined') {
     removeItem: (key: string) => localStorage.removeItem(key),
   };
 } else {
-  // Placeholder for React Native - in a real app, you would import AsyncStorage
-  // import { AsyncStorage } from 'react-native';
-  // storage = AsyncStorage;
+  // React Native placeholder — reemplazar con AsyncStorage cuando se migre a nativo
   storage = {
-    getItem: async (key: string) => null, // Placeholder
-    setItem: async (key: string, value: string) => {}, // Placeholder
-    removeItem: async (key: string) => {}, // Placeholder
+    getItem: async (_key: string) => null,
+    setItem: async (_key: string, _value: string) => {},
+    removeItem: async (_key: string) => {},
   };
+}
+
+// ─── Tipos ───────────────────────────────────────────────────────────────────
+
+/** Perfil de usuario devuelto por el backend */
+interface UserProfile {
+  _id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  role: string;
+  isActive?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 interface AuthContextType {
   token: string | null;
-  user: any | null;
+  user: UserProfile | null;
   loading: boolean;
+  isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
   register: (
     email: string,
@@ -39,17 +52,36 @@ interface AuthContextType {
     firstName: string,
     lastName: string
   ) => Promise<void>;
-  logout: () => void;
+  logout: () => Promise<void>;
 }
+
+// ─── Context ─────────────────────────────────────────────────────────────────
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [token, setToken] = useState<string | null>(null);
-  const [user, setUser] = useState<any | null>(null);
+  const [user, setUser] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
-  // Load token from storage on startup
+  // ── Logout (forward declaration para usarlo en el callback 401) ──────────
+  const logout = async () => {
+    setToken(null);
+    setUser(null);
+    await storage.removeItem('token');
+  };
+
+  // ── Registrar callback de sesión expirada en el interceptor 401 ──────────
+  useEffect(() => {
+    setUnauthorizedCallback(logout);
+    return () => {
+      // Limpiar callback al desmontar
+      setUnauthorizedCallback(null);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // ── Cargar token persistido al iniciar la app ────────────────────────────
   useEffect(() => {
     const loadToken = async () => {
       try {
@@ -57,17 +89,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
         if (storedToken) {
           setToken(storedToken);
-          // Fetch user profile
+          // Verificar que el token sigue siendo válido obteniendo el perfil
           try {
             const response = await authService.getProfile();
-            setUser(response.data);
+            // Backend responde: { success: true, data: { _id, email, ... } }
+            setUser(response.data.data);
           } catch {
+            // Token inválido o expirado → limpiar
             setToken(null);
             await storage.removeItem('token');
           }
         }
       } catch {
-        // Ignore error
+        // Ignorar errores de lectura del storage
       } finally {
         setLoading(false);
       }
@@ -76,29 +110,38 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     loadToken();
   }, []);
 
-  const login = async (
-    email: string,
-    password: string,
-    firstName: string,
-    lastName: string
-  ) => {
+  // ── Login ────────────────────────────────────────────────────────────────
+  /**
+   * Autentica al usuario con email y contraseña.
+   * Backend responde: { success: true, data: { _id, email, ... }, token: "..." }
+   */
+  const login = async (email: string, password: string): Promise<void> => {
     try {
       const response = await authService.login({ email, password });
-      const { token: newToken, ...userData } = response.data;
+      // El token viene en la raíz de response.data, el usuario en response.data.data
+      const { token: newToken, data: userData } = response.data;
       setToken(newToken);
       setUser(userData);
       await storage.setItem('token', newToken);
-    } catch {
-      throw new Error('Login failed');
+    } catch (error: any) {
+      // Re-lanzar con mensaje legible para el UI
+      const message =
+        error?.response?.data?.message || 'Error al iniciar sesión';
+      throw new Error(message);
     }
   };
 
+  // ── Register ─────────────────────────────────────────────────────────────
+  /**
+   * Crea una cuenta nueva y autentica al usuario.
+   * Backend responde: { success: true, data: { _id, email, ... }, token: "..." }
+   */
   const register = async (
     email: string,
     password: string,
     firstName: string,
     lastName: string
-  ) => {
+  ): Promise<void> => {
     try {
       const response = await authService.register({
         email,
@@ -106,27 +149,36 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         firstName,
         lastName,
       });
-      const { token: newToken, ...userData } = response.data;
+      // Igual que login: token en raíz, user en data.data
+      const { token: newToken, data: userData } = response.data;
       setToken(newToken);
       setUser(userData);
       await storage.setItem('token', newToken);
-    } catch {
-      throw new Error('Registration failed');
+    } catch (error: any) {
+      const message =
+        error?.response?.data?.message || 'Error al crear la cuenta';
+      throw new Error(message);
     }
   };
 
-  const logout = async () => {
-    setToken(null);
-    setUser(null);
-    await storage.removeItem('token');
-  };
-
+  // ── Mientras carga el token inicial no renderizar nada ───────────────────
+  // Evita el flash de la pantalla de login si ya hay sesión guardada.
   if (loading) {
-    return null; // Or return a loading spinner
+    return null;
   }
 
   return (
-    <AuthContext.Provider value={{ token, user, login, register, logout }}>
+    <AuthContext.Provider
+      value={{
+        token,
+        user,
+        loading,
+        isAuthenticated: !!token,
+        login,
+        register,
+        logout,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
