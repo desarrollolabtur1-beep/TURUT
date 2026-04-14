@@ -21,11 +21,16 @@ const UserSchema = new Schema<IUser>(
       unique: true,
       lowercase: true,
       trim: true,
+      match: [
+        /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+        'Por favor ingresa un email válido',
+      ],
     },
     password: {
       type: String,
       required: [true, 'Contraseña es obligatoria'],
       minlength: [6, 'La contraseña debe tener al menos 6 caracteres'],
+      select: false, // No incluir en queries por defecto
     },
     firstName: {
       type: String,

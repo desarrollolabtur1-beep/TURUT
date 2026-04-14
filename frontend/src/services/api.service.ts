@@ -1,9 +1,13 @@
 import axios from 'axios';
 
-// API Base URL — uses local dev server or production
-const API_BASE_URL = __DEV__
-  ? 'http://localhost:5000/api'
-  : 'https://api.turut.online/api';
+// ── Configuración de API ─────────────────────────────────────────────────────
+// En desarrollo local, cambia a true SOLO si tienes el backend corriendo local
+const USE_LOCAL_BACKEND = false;
+
+const API_BASE_URL =
+  __DEV__ && USE_LOCAL_BACKEND
+    ? 'http://localhost:5000/api'
+    : 'https://api.turut.online/api';
 
 // ─── Callback de sesión expirada ─────────────────────────────────────────────
 // AuthContext registra aquí su función logout para que el interceptor pueda

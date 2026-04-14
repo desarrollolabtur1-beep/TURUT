@@ -1,35 +1,24 @@
+/**
+ * Tipos de navegación — sincronizados con AppNavigator.tsx
+ * La fuente de verdad es RootStackParamList en AppNavigator.tsx
+ * Este archivo re-exporta helpers tipados para usar en screens.
+ */
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import type { RootStackParamList } from '../navigation/AppNavigator';
 
-export type RootStackParamList = {
-  Home: undefined;
-  Login: undefined;
-  Register: undefined;
-  ExperienceDetail: { experienceId: string };
-  Profile: undefined;
-  Bookings: undefined;
-};
-
-export type HomeScreenProps = NativeStackScreenProps<
+export type SplashScreenProps = NativeStackScreenProps<
   RootStackParamList,
-  'Home'
+  'Splash'
 >;
 export type LoginScreenProps = NativeStackScreenProps<
   RootStackParamList,
   'Login'
 >;
-export type RegisterScreenProps = NativeStackScreenProps<
+export type MainTabsScreenProps = NativeStackScreenProps<
   RootStackParamList,
-  'Register'
+  'MainTabs'
 >;
-export type ExperienceDetailScreenProps = NativeStackScreenProps<
+export type LandingScreenProps = NativeStackScreenProps<
   RootStackParamList,
-  'ExperienceDetail'
->;
-export type ProfileScreenProps = NativeStackScreenProps<
-  RootStackParamList,
-  'Profile'
->;
-export type BookingsScreenProps = NativeStackScreenProps<
-  RootStackParamList,
-  'Bookings'
+  'Landing'
 >;

@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import rateLimit from 'express-rate-limit';
 import { register, login } from '../controllers/auth.controller';
 import { protect } from '../middleware/auth.middleware';
 import { User } from '../models/User.model';
@@ -6,9 +7,32 @@ import { Request, Response } from 'express';
 
 const router = Router();
 
-// Public routes
-router.post('/register', register);
-router.post('/login', login);
+// Rate limiters para prevenir ataques de fuerza bruta
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutos
+  max: 10, // máximo 10 intentos por ventana
+  message: {
+    success: false,
+    message: 'Demasiados intentos de inicio de sesión. Inténtalo en 15 minutos.',
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+const registerLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5, // máximo 5 registros por ventana
+  message: {
+    success: false,
+    message: 'Demasiados intentos de registro. Inténtalo en 15 minutos.',
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Public routes (con rate limiting)
+router.post('/register', registerLimiter, register);
+router.post('/login', loginLimiter, login);
 
 // Protected: get my profile
 router.get('/me', protect, async (req: Request, res: Response): Promise<void> => {

@@ -74,7 +74,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     }
 
     // Find user and include password for comparison
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).select('+password');
 
     if (!user) {
       res.status(401).json({
