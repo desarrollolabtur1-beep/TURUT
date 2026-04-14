@@ -148,14 +148,19 @@ const LoginStepper: React.FC = () => {
       >
         {/* ── Header con botón volver ── */}
         <View style={styles.header}>
-          <TouchableOpacity
-            onPress={() => (stepper.isFirst ? navigation.goBack() : stepper.back())}
-            style={styles.backBtn}
-          >
-            <Text style={styles.backBtnText}>
-              {stepper.currentStep === 2 ? '' : '←'}
-            </Text>
-          </TouchableOpacity>
+          {/* Paso 0: sin flecha (no hay a dónde retroceder en producción) */}
+          {/* Paso 1: flecha que retrocede al paso anterior */}
+          {stepper.currentStep === 1 ? (
+            <TouchableOpacity
+              onPress={() => stepper.back()}
+              style={styles.backBtn}
+            >
+              <Text style={styles.backBtnText}>←</Text>
+            </TouchableOpacity>
+          ) : (
+            // Placeholder invisible para mantener el layout del header
+            <View style={styles.backBtnPlaceholder} />
+          )}
 
           {/* Indicador de modo */}
           {stepper.currentStep < 2 && (
@@ -397,6 +402,11 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surfaceContainerHigh,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  // Mismo tamaño que backBtn para no desplazar el layout
+  backBtnPlaceholder: {
+    width: 36,
+    height: 36,
   },
   backBtnText: {
     color: colors.textPrimary,

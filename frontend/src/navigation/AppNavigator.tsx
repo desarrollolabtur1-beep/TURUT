@@ -2,16 +2,17 @@
  * AppNavigator — Root navigation stack
  *
  * Auth Guard:
- *   - Sin token → pantalla Login (LoginStepper)
- *   - Con token  → MainTabs + Landing
+ *   Sin token →  Splash → Login (LoginStepper)
+ *   Con token →  MainTabs + Landing
  * Sandbox:
- *   - Experiments (solo si EXPERIMENTS_ENABLED = true en experiments/config.ts)
+ *   Experiments (solo si EXPERIMENTS_ENABLED = true en experiments/config.ts)
  */
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import MainTabs from './MainTabs';
 import LandingOverlay from '../screens/LandingOverlay';
+import SplashScreen from '../screens/auth/SplashScreen';
 import LoginStepper from '../screens/auth/LoginStepper';
 import { useAuth } from '../context/AuthContext';
 // 🧪 Sandbox — solo se carga si EXPERIMENTS_ENABLED = true
@@ -20,6 +21,7 @@ import ExperimentsNavigator from '../experiments/ExperimentsNavigator';
 
 export type RootStackParamList = {
   MainTabs: undefined;
+  Splash: undefined;
   Login: undefined;
   Landing: { destIndex: number };
   Experiments: undefined; // 🧪 Sandbox screen
@@ -39,6 +41,8 @@ const AppNavigator: React.FC = () => {
       <Stack.Navigator
         screenOptions={{
           headerShown: false,
+          // Transición suave entre Splash → Login → MainTabs
+          animation: 'fade',
         }}
       >
         {/* 🧪 Sandbox — desactivar en producción cambiando config.ts */}
@@ -46,10 +50,10 @@ const AppNavigator: React.FC = () => {
           <Stack.Screen name="Experiments" component={ExperimentsNavigator} />
         )}
 
-        {/* ── Auth Guard ────────────────────────────────────────────────────
+        {/* ── Auth Guard ─────────────────────────────────────────────────────
             React Navigation detecta el cambio de token automáticamente:
-            - Login exitoso  → token != null → navega a MainTabs
-            - Logout / 401   → token = null  → navega a Login
+              - Login exitoso  → token != null → navega a MainTabs (auth guard)
+              - Logout / 401   → token = null  → navega a Splash (auth guard)
         ──────────────────────────────────────────────────────────────────── */}
         {token ? (
           <>
@@ -64,7 +68,11 @@ const AppNavigator: React.FC = () => {
             />
           </>
         ) : (
-          <Stack.Screen name="Login" component={LoginStepper} />
+          <>
+            {/* Flujo sin sesión: Splash → Login */}
+            <Stack.Screen name="Splash" component={SplashScreen} />
+            <Stack.Screen name="Login" component={LoginStepper} />
+          </>
         )}
       </Stack.Navigator>
     </NavigationContainer>
