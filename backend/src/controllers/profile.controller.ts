@@ -224,3 +224,34 @@ export const markDestinationVisited = async (
     res.status(500).json({ success: false, message: 'Error del servidor' });
   }
 };
+
+// @desc    TEMPORARY: Volver admin a un correo específico
+// @route   GET /api/user/make-me-admin?email=tu-correo@ejemplo.com
+// @access  Public
+export const makeMeAdmin = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const email = req.query.email;
+    if (!email || typeof email !== 'string') {
+      res.status(400).json({ success: false, message: 'Falta el parámetro email en la URL' });
+      return;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const userModel = require('../models/User.model').User;
+    const user = await userModel.findOneAndUpdate({ email: email.trim().toLowerCase() }, { role: 'admin' }, { new: true });
+    
+    if (!user) {
+      res.status(404).json({ success: false, message: 'Usuario no encontrado' });
+      return;
+    }
+
+    res.status(200).json({
+      success: true,
+      message: `¡Listo! El usuario ${user.email} ahora es administrador. Cierra sesión e inicia de nuevo en la app para ver el Panel.`,
+      role: user.role
+    });
+  } catch (error) {
+    console.error('makeMeAdmin error:', error);
+    res.status(500).json({ success: false, message: 'Error del servidor' });
+  }
+};
