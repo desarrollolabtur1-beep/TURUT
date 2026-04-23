@@ -6,6 +6,7 @@
 import React from 'react';
 import { View, StyleSheet, Platform, ScrollView, Dimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { LinearGradient } from 'expo-linear-gradient';
 import { colors, layout } from '../theme';
 
 const { height: screenHeight } = Dimensions.get('window');
@@ -34,7 +35,11 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
   return (
     <View style={containerStyle}>
-      <View style={innerStyle}>
+      <LinearGradient 
+        colors={['rgba(255, 255, 255, 0.12)', '#000000', '#000000']} 
+        locations={[0, 0.2, 1]}
+        style={innerStyle}
+      >
         <View style={styles.contentWrapper}>
           <ScrollView
             style={styles.scrollContent}
@@ -45,7 +50,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
             {children}
           </ScrollView>
         </View>
-      </View>
+      </LinearGradient>
     </View>
   );
 };
@@ -55,14 +60,15 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   mobileContainer: {
-    backgroundColor: colors.surface,
+    backgroundColor: '#000000', // Negro absoluto para el interior
   },
   webContainer: {
-    backgroundColor: colors.black,
+    backgroundColor: '#FFFFFF', // Blanco puro para el fondo de pantalla (Web)
   },
   inner: {
     flex: 1,
-    backgroundColor: colors.surface,
+    backgroundColor: '#000000', // Negro absoluto para el interior
+
     maxWidth: layout.mobileMaxWidth,
     alignSelf: 'center',
     width: '100%',

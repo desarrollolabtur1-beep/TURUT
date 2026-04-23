@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { authService } from '../services/api.service';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { authService, userService } from '../services/api.service';
 import { setUnauthorizedCallback } from '../services/api.service';
 
 // ─── Storage adapter (web / React Native) ────────────────────────────────────
@@ -28,14 +28,52 @@ if (typeof window !== 'undefined') {
 
 // ─── Tipos ───────────────────────────────────────────────────────────────────
 
+/** Destino visitado (populated) */
+export interface VisitedDestination {
+  destination: {
+    _id: string;
+    title: string;
+    location: string;
+    images: string[];
+    category: string;
+  } | string; // may be unpopulated ObjectId
+  visitedAt: string;
+}
+
 /** Perfil de usuario devuelto por el backend */
-interface UserProfile {
+export interface UserPreferences {
+  experienceTypes?: string[];
+  travelCompany?: string;
+  availableTime?: string;
+  coffeeExperience?: string;
+  coffeeInterests?: string[];
+  naturePreferences?: string[];
+  lodgingStyle?: string;
+  connectivityPreference?: string;
+  escapeTime?: string;
+}
+
+export interface UserProfile {
   _id: string;
   email: string;
   firstName: string;
   lastName: string;
   role: string;
   isActive?: boolean;
+  profileImage?: string;
+  bio?: string;
+  visitedDestinations?: VisitedDestination[];
+  // Datos demográficos
+  city?: string;
+  phone?: string;
+  birthDate?: string | null;
+  gender?: string;
+  // Preferencias de exploración
+  preferences?: UserPreferences;
+  // Necesidades especiales
+  specialNeeds?: string[];
+  // Canal de adquisición
+  acquisitionSource?: string;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -53,6 +91,8 @@ interface AuthContextType {
     lastName: string
   ) => Promise<void>;
   logout: () => Promise<void>;
+  /** Re-fetch profile from backend (use after profile edits) */
+  refreshUser: () => Promise<void>;
 }
 
 // ─── Context ─────────────────────────────────────────────────────────────────
@@ -70,6 +110,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setUser(null);
     await storage.removeItem('token');
   };
+
+  // ── Refresh user profile from backend ────────────────────────────────────
+  const refreshUser = useCallback(async () => {
+    try {
+      const response = await userService.getProfile();
+      setUser(response.data.data);
+    } catch {
+      // Silently fail — user will see stale data
+    }
+  }, []);
 
   // ── Registrar callback de sesión expirada en el interceptor 401 ──────────
   useEffect(() => {
@@ -177,6 +227,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         login,
         register,
         logout,
+        refreshUser,
       }}
     >
       {children}

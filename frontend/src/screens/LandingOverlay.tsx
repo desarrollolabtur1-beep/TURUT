@@ -2,7 +2,7 @@
  * LandingOverlay — Full-screen destination detail modal
  * Shows image hero, info, countdown timer, social links, and CTA
  */
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import {
   View,
   Text,
@@ -12,14 +12,15 @@ import {
   Linking,
   StyleSheet,
   Dimensions,
+  Platform,
+  Modal,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import Svg, { Path, Rect, Line, Circle } from 'react-native-svg';
-import { CountdownTimer } from '../components/ui/CountdownTimer';
 import { GoldenButton } from '../components/ui/GoldenButton';
 import { destinations } from '../data/destinations';
-import { colors, radii, layout } from '../theme';
+import { colors, radii, layout, textStyles } from '../theme';
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
@@ -30,23 +31,30 @@ const CloseIcon = () => (
   </Svg>
 );
 
-const InstagramIcon = () => (
-  <Svg width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+const InstagramIcon = ({ color = 'currentColor' }: { color?: string }) => (
+  <Svg width={24} height={24} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
     <Rect x={2} y={2} width={20} height={20} rx={5} ry={5} />
     <Path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
     <Line x1={17.5} y1={6.5} x2={17.51} y2={6.5} />
   </Svg>
 );
 
-const FacebookIcon = () => (
-  <Svg width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+const FacebookIcon = ({ color = 'currentColor' }: { color?: string }) => (
+  <Svg width={24} height={24} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
     <Path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
   </Svg>
 );
 
-const TwitterIcon = () => (
-  <Svg width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-    <Path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z" />
+const WhatsAppIcon = ({ color = 'currentColor' }: { color?: string }) => (
+  <Svg width={24} height={24} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+    <Path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+  </Svg>
+);
+
+const MapPinIcon = ({ color = 'currentColor' }: { color?: string }) => (
+  <Svg width={24} height={24} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+    <Path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+    <Circle cx={12} cy={10} r={3} />
   </Svg>
 );
 
@@ -58,6 +66,16 @@ const LandingOverlay: React.FC = () => {
   const destination = destinations[destIndex];
 
   const [ctaActivated, setCtaActivated] = useState(false);
+  const [galleryIndex, setGalleryIndex] = useState(0);
+  const [isFullScreen, setIsFullScreen] = useState(false);
+
+  useEffect(() => {
+    if (!destination.gallery || destination.gallery.length <= 1) return;
+    const interval = setInterval(() => {
+      setGalleryIndex((prev) => (prev + 1) % destination.gallery!.length);
+    }, 6000); // 6 seconds
+    return () => clearInterval(interval);
+  }, [destination.gallery]);
 
   const handleClose = useCallback(() => {
     navigation.goBack();
@@ -68,8 +86,15 @@ const LandingOverlay: React.FC = () => {
   }, []);
 
   const handleWhatsApp = useCallback(() => {
-    Linking.openURL(destination.wa);
+    if (destination.wa) {
+      Linking.openURL(destination.wa);
+    }
   }, [destination.wa]);
+
+  const handleGoogleMaps = useCallback(() => {
+    const url = destination.maps || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(destination.name)}`;
+    Linking.openURL(url);
+  }, [destination.name, destination.maps]);
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
@@ -79,15 +104,19 @@ const LandingOverlay: React.FC = () => {
         contentContainerStyle={styles.scrollContent}
       >
         {/* Hero Image */}
-        <View style={styles.hero}>
-          <Image source={destination.img} style={styles.heroImg} resizeMode="cover" />
+        <TouchableOpacity activeOpacity={0.9} onPress={() => setIsFullScreen(true)} style={[styles.hero, { backgroundColor: '#000' }]}>
+          <Image 
+            source={destination.gallery && destination.gallery.length > 0 ? destination.gallery[galleryIndex] : destination.img} 
+            style={styles.heroImg} 
+            resizeMode="contain" 
+          />
           <TouchableOpacity
             style={[styles.closeBtn, { top: insets.top + 16 }]}
             onPress={handleClose}
           >
             <CloseIcon />
           </TouchableOpacity>
-        </View>
+        </TouchableOpacity>
 
         {/* Content */}
         <View style={styles.content}>
@@ -95,32 +124,60 @@ const LandingOverlay: React.FC = () => {
             {destination.category.toUpperCase()} Y PAISAJE
           </Text>
           <Text style={styles.title}>{destination.name}</Text>
-          <Text style={styles.desc}>{destination.desc}</Text>
+          <View style={styles.descContainer}>
+            <Text style={styles.descText}>{destination.desc}</Text>
+          </View>
 
-          {/* Countdown Timer */}
-          <CountdownTimer />
+          {/* Extra Info Box */}
+          {destination.extraInfo && (
+            <View style={styles.infoContainer}>
+              <Text style={styles.infoBoxText}>{destination.extraInfo}</Text>
+            </View>
+          )}
+
+          {/* CTA */}
+          <View style={styles.ctaWrapper}>
+            <GoldenButton
+              label={ctaActivated ? '¡Bono Activado!' : 'Activar Bono de Ahorro'}
+              variant={ctaActivated ? 'success' : 'default'}
+              onPress={handleCta}
+            />
+          </View>
 
           {/* Social Links */}
           <View style={styles.socialRow}>
             <TouchableOpacity style={styles.socialBtn}>
-              <InstagramIcon />
+              <InstagramIcon color="#E1306C" />
             </TouchableOpacity>
             <TouchableOpacity style={styles.socialBtn}>
-              <FacebookIcon />
+              <FacebookIcon color="#1877F2" />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.socialBtn}>
-              <TwitterIcon />
+            <TouchableOpacity style={styles.socialBtn} onPress={handleWhatsApp}>
+              <WhatsAppIcon color="#25D366" />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.socialBtn} onPress={handleGoogleMaps}>
+              <MapPinIcon color="#EA4335" />
             </TouchableOpacity>
           </View>
-
-          {/* CTA */}
-          <GoldenButton
-            label={ctaActivated ? '¡Bono Activado!' : 'Activar Bono de Ahorro'}
-            variant={ctaActivated ? 'success' : 'default'}
-            onPress={handleCta}
-          />
         </View>
       </ScrollView>
+
+      {/* Fullscreen Image Modal */}
+      <Modal visible={isFullScreen} transparent={true} animationType="fade" onRequestClose={() => setIsFullScreen(false)}>
+        <View style={styles.fullScreenContainer}>
+          <TouchableOpacity 
+            style={[styles.closeBtn, { top: insets.top + 16, zIndex: 10 }]} 
+            onPress={() => setIsFullScreen(false)}
+          >
+            <CloseIcon />
+          </TouchableOpacity>
+          <Image 
+            source={destination.gallery && destination.gallery.length > 0 ? destination.gallery[galleryIndex] : destination.img} 
+            style={styles.fullScreenImg} 
+            resizeMode="contain" 
+          />
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -139,7 +196,7 @@ const styles = StyleSheet.create({
   },
   heroImg: {
     width: '100%',
-    height: SCREEN_HEIGHT * 0.4,
+    height: SCREEN_HEIGHT * 0.35,
   },
   closeBtn: {
     position: 'absolute',
@@ -164,14 +221,14 @@ const styles = StyleSheet.create({
     zIndex: 5,
   },
   category: {
-    color: colors.primary,
+    color: '#00E5FF',
     fontWeight: '700',
     textTransform: 'uppercase',
     letterSpacing: 2.4,
     fontSize: 11.2,
   },
   title: {
-    fontFamily: 'Montserrat-ExtraBold',
+    fontFamily: Platform.OS === 'web' ? 'Georgia, serif' : 'serif',
     fontSize: 32,
     color: colors.white,
     fontWeight: '800',
@@ -179,17 +236,26 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     letterSpacing: -0.3,
   },
-  desc: {
-    color: colors.textSecondary,
+  descContainer: {
+    marginBottom: 28,
+    paddingLeft: 16,
+    borderLeftWidth: 3,
+    borderLeftColor: '#B829EA',
+  },
+  descText: {
+    color: 'rgba(255,255,255,0.85)',
+    lineHeight: 26,
+    fontSize: 15.5,
+  },
+  ctaWrapper: {
+    marginTop: 8,
     marginBottom: 32,
-    lineHeight: 27.2,
-    fontSize: 16,
   },
   socialRow: {
     flexDirection: 'row',
     justifyContent: 'center',
-    gap: 24,
-    marginBottom: 24,
+    gap: 20,
+    marginBottom: 16,
   },
   socialBtn: {
     width: 48,
@@ -201,6 +267,31 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     color: colors.textPrimary,
+  },
+  infoContainer: {
+    backgroundColor: 'rgba(255, 255, 255, 0.04)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.08)',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 28,
+  },
+  infoBoxText: {
+    color: '#E2E8F0',
+    fontWeight: '400',
+    fontSize: 13.5,
+    lineHeight: 22,
+    textAlign: 'left',
+  },
+  fullScreenContainer: {
+    flex: 1,
+    backgroundColor: '#000',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  fullScreenImg: {
+    width: '100%',
+    height: '100%',
   },
 });
 

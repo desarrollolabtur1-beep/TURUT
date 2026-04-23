@@ -1,6 +1,6 @@
 /**
  * MainTabs — Bottom tab navigator with pill-shaped floating bar
- * 3 tabs: Imperdibles, Tu Ruta, Radar
+ * 4 tabs: Imperdibles, Tu Ruta, Radar, Perfil
  * - Active tab: icon glows + label appears
  * - Inactive tab: icon only, dimmed
  */
@@ -12,6 +12,7 @@ import Svg, { Path, Circle, Line, Rect, G } from 'react-native-svg';
 import HomeScreen from '../screens/HomeScreen';
 import DiscoverScreen from '../screens/DiscoverScreen';
 import RadarScreen from '../screens/RadarScreen';
+import ProfileScreen from '../screens/profile/ProfileScreen';
 import { colors, shadows, layout } from '../theme';
 
 const Tab = createBottomTabNavigator();
@@ -55,7 +56,9 @@ const CustomTabBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigat
             ? <StarIcon color="rgba(255,255,255,0.35)" size={22} active={isFocused} />
             : route.name === 'Tu Ruta'
               ? <CardsIcon color="rgba(255,255,255,0.35)" size={22} active={isFocused} />
-              : <RadarIcon color="rgba(255,255,255,0.35)" size={22} active={isFocused} />;
+              : route.name === 'Radar'
+                ? <RadarIcon color="rgba(255,255,255,0.35)" size={22} active={isFocused} />
+                : <ProfileIcon color="rgba(255,255,255,0.35)" size={22} active={isFocused} />;
 
           return (
             <View key={route.key} style={styles.tabItem}>
@@ -151,6 +154,20 @@ const RadarIcon = ({ color, size, active }: { color: string; size: number; activ
   );
 };
 
+const ProfileIcon = ({ color, size, active }: { color: string; size: number; active: boolean }) => {
+  const strokeColor = active ? colors.primary : color;
+  return (
+    <View style={active ? getNativeGlow(colors.primary) : undefined}>
+      <Svg style={active ? getWebGlow(colors.primary) : undefined} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={strokeColor} strokeWidth={active ? 2 : 1.5} strokeLinecap="round" strokeLinejoin="round">
+        {/* Head */}
+        <Circle cx="12" cy="8" r="4" />
+        {/* Body/Shoulders */}
+        <Path d="M20 21a8 8 0 10-16 0" />
+      </Svg>
+    </View>
+  );
+};
+
 const MainTabs: React.FC = () => {
   const insets = useSafeAreaInsets();
 
@@ -174,6 +191,10 @@ const MainTabs: React.FC = () => {
       <Tab.Screen
         name="Radar"
         component={RadarScreen}
+      />
+      <Tab.Screen
+        name="Perfil"
+        component={ProfileScreen}
       />
     </Tab.Navigator>
   );
@@ -232,7 +253,7 @@ const styles = StyleSheet.create({
   },
   webTabBar: {
     width: '100%',
-    maxWidth: 360,
+    maxWidth: 400,
     alignSelf: 'center',
     backdropFilter: 'blur(30px) saturate(2)' as any,
     WebkitBackdropFilter: 'blur(30px) saturate(2)' as any,
@@ -253,3 +274,4 @@ const styles = StyleSheet.create({
 });
 
 export default MainTabs;
+

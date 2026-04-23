@@ -13,7 +13,9 @@ export interface Destination {
   desc: string;
   img: ImageSourcePropType;
   wa: string;
-  rating: number;
+  maps?: string;
+  extraInfo?: string;
+  gallery?: ImageSourcePropType[];
 }
 
 /** Image assets mapped by require() for bundling */
@@ -23,6 +25,13 @@ const images = {
   lostunjos: require('../../assets/images/lostunjos.png'),
   rutaguardian: require('../../assets/images/rutaguardian.png'),
   terrazatotumo: require('../../assets/images/terrazatotumo.png'),
+  kajol_1: require('../../assets/images/kajol_1.jpg'),
+  kajol_2: require('../../assets/images/kajol_2.jpg'),
+  kajol_3: require('../../assets/images/kajol_3.jpg'),
+  kajol_4: require('../../assets/images/kajol_4.jpg'),
+  kajol_5: require('../../assets/images/kajol_5.jpg'),
+  kajol_6: require('../../assets/images/kajol_6.jpg'),
+  kajol_7: require('../../assets/images/kajol_7.jpg'),
 };
 
 export const destinations: Destination[] = [
@@ -39,13 +48,15 @@ export const destinations: Destination[] = [
   },
   {
     id: 2,
-    name: 'La Mesa del Café',
+    name: 'JARDINES DE BERLÍN KAJOL',
     category: 'Coffee',
     distance: '8km',
     discount: 15,
-    desc: 'Experiencia premium de degustación de café de origen. Aprende los secretos de tostión y disfruta una vista increíble.',
+    desc: 'En Jardines de Berlín Kajol, un alojamiento rural sostenible, la armonía con la naturaleza es el corazón de cada experiencia. Reconocido por Cortolima como Negocio Verde, este lugar ofrece un refugio donde el respeto por el medio ambiente se combina con la calidez de la hospitalidad rural. Aquí, cada detalle refleja un compromiso con la sostenibilidad, invitándote a disfrutar de la serenidad del entorno mientras formas parte de un modelo de turismo responsable.',
+    extraInfo: 'Alojamiento, cuenta con un café para experiencias de café, cowork, planes pasadía donde los usuarios pueden disfrutar de la zona bienestar que incluye piscina-jacuzzi, juegos tradicionales y una mini cancha funcional, entre otros.',
     img: images.lamesa,
-    wa: 'https://wa.me/573001234567?text=Hola%20quiero%20info%20de%20La%20Mesa%20del%20Café',
+    gallery: [images.kajol_4, images.kajol_5, images.kajol_6, images.kajol_7],
+    wa: 'https://wa.me/573001234567?text=Hola%20quiero%20info%20de%20JARDINES%20DE%20BERL%C3%8DN%20KAJOL',
     rating: 4.8,
   },
   {

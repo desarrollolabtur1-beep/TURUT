@@ -7,6 +7,8 @@ import { env } from './config/env';
 import authRoutes from './routes/auth.routes';
 import experienceRoutes from './routes/experience.routes';
 import bookingRoutes from './routes/booking.routes';
+import profileRoutes from './routes/profile.routes';
+import adminRoutes from './routes/admin.routes';
 import { errorHandler, notFound } from './middleware/error.middleware';
 import mongoose from 'mongoose';
 
@@ -45,6 +47,8 @@ app.get('/api/health', (_req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/experiences', experienceRoutes);
 app.use('/api/bookings', bookingRoutes);
+app.use('/api/user', profileRoutes);
+app.use('/api/admin', adminRoutes);
 
 // ─── Error Handling ───────────────────────────────
 app.use(notFound);

@@ -111,3 +111,13 @@ export const bookingService = {
     api.put(`/bookings/${id}`, bookingData),
   delete: (id: string) => api.delete(`/bookings/${id}`),
 };
+
+// User / Profile service functions
+export const userService = {
+  getProfile: () => api.get('/user/profile'),
+  updateProfile: (data: Record<string, any>) =>
+    api.put('/user/profile', data),
+  markVisited: (experienceId: string) =>
+    api.post(`/experiences/${experienceId}/visit`),
+};
+

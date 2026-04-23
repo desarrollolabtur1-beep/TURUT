@@ -15,6 +15,7 @@ import LandingOverlay from '../screens/LandingOverlay';
 import SplashScreen from '../screens/auth/SplashScreen';
 import LoginStepper from '../screens/auth/LoginStepper';
 import { useAuth } from '../context/AuthContext';
+import AdminDashboardScreen from '../screens/admin/AdminDashboardScreen';
 // 🧪 Sandbox — solo se carga si EXPERIMENTS_ENABLED = true
 import { EXPERIMENTS_ENABLED } from '../experiments/config';
 import ExperimentsNavigator from '../experiments/ExperimentsNavigator';
@@ -24,6 +25,7 @@ export type RootStackParamList = {
   Splash: undefined;
   Login: undefined;
   Landing: { destIndex: number };
+  AdminDashboard: undefined;
   Experiments: undefined; // 🧪 Sandbox screen
 };
 
@@ -64,6 +66,13 @@ const AppNavigator: React.FC = () => {
               options={{
                 presentation: 'fullScreenModal',
                 animation: 'slide_from_bottom',
+              }}
+            />
+            <Stack.Screen
+              name="AdminDashboard"
+              component={AdminDashboardScreen}
+              options={{
+                animation: 'slide_from_right',
               }}
             />
           </>

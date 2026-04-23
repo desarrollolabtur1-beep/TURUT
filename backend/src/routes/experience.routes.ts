@@ -9,6 +9,7 @@ import {
   updateExperience,
   deleteExperience,
 } from '../controllers/experience.controller';
+import { markDestinationVisited } from '../controllers/profile.controller';
 
 const router = Router();
 
@@ -21,6 +22,7 @@ router.use(protect);
 
 router.get('/my-experiences', getMyExperiences);   // Must be BEFORE /:id
 router.post('/', createExperience);
+router.post('/:id/visit', markDestinationVisited); // Mark destination as visited
 router.put('/:id', updateExperience);
 router.delete('/:id', deleteExperience);
 
