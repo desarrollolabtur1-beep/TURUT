@@ -186,7 +186,9 @@ const BarChart: React.FC<{
 
 const AdminDashboardScreen: React.FC = () => {
   const navigation = useNavigation();
+  const [activeTab, setActiveTab] = useState<'stats' | 'users'>('stats');
   const [data, setData] = useState<AnalyticsData | null>(null);
+  const [usersList, setUsersList] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -194,10 +196,15 @@ const AdminDashboardScreen: React.FC = () => {
   const fetchData = useCallback(async () => {
     try {
       setError(null);
-      const response = await api.get('/admin/analytics');
-      setData(response.data.data);
+      // Fetch both simultaneously
+      const [analyticsRes, usersRes] = await Promise.all([
+        api.get('/admin/analytics'),
+        api.get('/admin/users')
+      ]);
+      setData(analyticsRes.data.data);
+      setUsersList(usersRes.data.data || []);
     } catch (err: any) {
-      const msg = err?.response?.data?.message || 'Error al cargar analytics';
+      const msg = err?.response?.data?.message || 'Error al cargar datos de admin';
       setError(msg);
     } finally {
       setLoading(false);
@@ -258,14 +265,32 @@ const AdminDashboardScreen: React.FC = () => {
         <View style={{ width: 36 }} />
       </View>
 
-      {/* Summary stats */}
-      <View style={styles.statsRow}>
-        <StatCard label="Usuarios totales" value={data.totalUsers} accent />
-        <StatCard label="Perfiles completos" value={data.completedProfiles} />
-        <StatCard label="Tasa completado" value={`${data.completionRate}%`} />
+      {/* Tabs */}
+      <View style={styles.tabContainer}>
+        <TouchableOpacity 
+          style={[styles.tabBtn, activeTab === 'stats' && styles.tabBtnActive]} 
+          onPress={() => setActiveTab('stats')}
+        >
+          <Text style={[styles.tabText, activeTab === 'stats' && styles.tabTextActive]}>📈 Estadísticas</Text>
+        </TouchableOpacity>
+        <TouchableOpacity 
+          style={[styles.tabBtn, activeTab === 'users' && styles.tabBtnActive]} 
+          onPress={() => setActiveTab('users')}
+        >
+          <Text style={[styles.tabText, activeTab === 'users' && styles.tabTextActive]}>👥 Personas ({usersList.length})</Text>
+        </TouchableOpacity>
       </View>
 
-      {/* Charts */}
+      {activeTab === 'stats' ? (
+        <>
+          {/* Summary stats */}
+          <View style={styles.statsRow}>
+            <StatCard label="Usuarios totales" value={data.totalUsers} accent />
+            <StatCard label="Perfiles completos" value={data.completedProfiles} />
+            <StatCard label="Tasa completado" value={`${data.completionRate}%`} />
+          </View>
+
+          {/* Charts */}
       <BarChart
         title="☕ Experiencia con café"
         data={data.coffeeExperience}
@@ -356,6 +381,26 @@ const AdminDashboardScreen: React.FC = () => {
         total={data.totalUsers}
         category="genders"
       />
+        </>
+      ) : (
+        <View style={styles.userListContainer}>
+          {usersList.map((usr) => (
+            <View key={usr._id} style={styles.userCard}>
+              <View style={styles.userCardHeader}>
+                <Text style={styles.userName}>{usr.firstName} {usr.lastName}</Text>
+                {usr.city && <Text style={styles.userCity}>📍 {usr.city}</Text>}
+              </View>
+              <Text style={styles.userDetails}>✉️ {usr.email}</Text>
+              {usr.phone && <Text style={styles.userDetails}>📞 {usr.phone}</Text>}
+              
+              <View style={styles.userTags}>
+                {usr.gender && <View style={styles.tag}><Text style={styles.tagText}>{getLabel('genders', usr.gender)}</Text></View>}
+                {usr.acquisitionSource && <View style={styles.tag}><Text style={styles.tagText}>{getLabel('acquisitionSources', usr.acquisitionSource)}</Text></View>}
+              </View>
+            </View>
+          ))}
+        </View>
+      )}
 
       {/* Bottom spacing */}
       <View style={{ height: 100 }} />
@@ -387,7 +432,32 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: spacing.xxl,
-    marginBottom: spacing.xxl,
+    marginBottom: spacing.md,
+  },
+  tabContainer: {
+    flexDirection: 'row',
+    marginHorizontal: spacing.xxl,
+    marginBottom: spacing.xl,
+    backgroundColor: colors.surfaceContainerHigh,
+    borderRadius: radii.pill,
+    padding: 4,
+  },
+  tabBtn: {
+    flex: 1,
+    paddingVertical: spacing.md,
+    alignItems: 'center',
+    borderRadius: radii.pill,
+  },
+  tabBtnActive: {
+    backgroundColor: colors.primary,
+  },
+  tabText: {
+    ...textStyles.bodySemiBold,
+    color: colors.textSecondary,
+    fontSize: 13,
+  },
+  tabTextActive: {
+    color: colors.onPrimary,
   },
   backBtn: {
     width: 36,
@@ -520,6 +590,56 @@ const styles = StyleSheet.create({
     ...textStyles.body,
     color: colors.textMuted,
     marginTop: spacing.md,
+  },
+  // Users List
+  userListContainer: {
+    paddingHorizontal: spacing.xxl,
+    gap: spacing.md,
+  },
+  userCard: {
+    backgroundColor: colors.surfaceContainerHigh,
+    borderRadius: radii.lg,
+    padding: spacing.lg,
+    borderWidth: 1,
+    borderColor: colors.outline,
+  },
+  userCardHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: spacing.xs,
+  },
+  userName: {
+    ...textStyles.headlineSmall,
+    color: colors.textPrimary,
+    fontSize: 16,
+  },
+  userCity: {
+    ...textStyles.bodySemiBold,
+    color: colors.textSecondary,
+    fontSize: 12,
+  },
+  userDetails: {
+    ...textStyles.body,
+    color: colors.textSecondary,
+    fontSize: 13,
+    marginBottom: spacing.md,
+  },
+  userTags: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: spacing.xs,
+  },
+  tag: {
+    backgroundColor: colors.surfaceContainerHighest,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: 4,
+    borderRadius: radii.sm,
+  },
+  tagText: {
+    ...textStyles.body,
+    color: colors.textPrimary,
+    fontSize: 10,
   },
 });
 
