@@ -89,6 +89,12 @@ export const authService = {
     api.post('/auth/login', credentials),
 
   getProfile: () => api.get('/auth/me'),
+
+  forgotPassword: (email: string) =>
+    api.post('/auth/forgot-password', { email }),
+
+  resetPassword: (email: string, code: string, newPassword: string) =>
+    api.post('/auth/reset-password', { email, code, newPassword }),
 };
 
 // Experience service functions

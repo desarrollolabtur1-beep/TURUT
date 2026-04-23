@@ -39,7 +39,8 @@ import { useStepper } from '../../hooks/useStepper';
 import { useFormField } from '../../hooks/useFormField';
 import { useKeyboardOffset } from '../../hooks/useKeyboardOffset';
 import { useAuth } from '../../context/AuthContext';
-import { colors } from '../../theme';
+import { colors, textStyles } from '../../theme';
+import { TurutLogo } from '../../components/header/TurutLogo';
 
 // ─── Validadores ────────────────────────────────────────────────────────────
 const emailValidator = (v: string) =>
@@ -56,6 +57,18 @@ const TOTAL_STEPS = 3;
 
 type Mode = 'login' | 'register';
 
+// ─── Detectar si es primera visita ──────────────────────────────────────────
+const getIsFirstVisit = (): boolean => {
+  if (typeof window === 'undefined') return true;
+  return !localStorage.getItem('turut_has_visited');
+};
+
+const markAsVisited = () => {
+  if (typeof window !== 'undefined') {
+    localStorage.setItem('turut_has_visited', 'true');
+  }
+};
+
 const LoginStepper: React.FC = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -63,15 +76,22 @@ const LoginStepper: React.FC = () => {
   const stepper = useStepper(TOTAL_STEPS);
   const keyboardOffset = useKeyboardOffset();
 
-  // Estado del modo (login vs register)
-  const [mode, setMode] = React.useState<Mode>('login');
+  // Primera visita → modo register | Ya visitó → modo login
+  const [isFirstVisit] = React.useState(getIsFirstVisit);
+  const [mode, setMode] = React.useState<Mode>(isFirstVisit ? 'register' : 'login');
   const [isLoading, setIsLoading] = React.useState(false);
+
+  // Marcar como visitado al montar el componente
+  React.useEffect(() => {
+    markAsVisited();
+  }, []);
 
   // Campos
   const email = useFormField('', emailValidator);
   const password = useFormField('', passwordValidator);
   const firstName = useFormField('', nameValidator);
   const lastName = useFormField('', nameValidator);
+  const [termsAccepted, setTermsAccepted] = React.useState(false);
 
   // Animación de la barra de progreso
   const progressAnim = useRef(new Animated.Value(0)).current;
@@ -96,7 +116,8 @@ const LoginStepper: React.FC = () => {
         lastName.isValid &&
         password.value.length > 0 &&
         firstName.value.length > 0 &&
-        lastName.value.length > 0;
+        lastName.value.length > 0 &&
+        termsAccepted;
 
   const handleNext = async () => {
     if (stepper.currentStep === 0) {
@@ -148,8 +169,6 @@ const LoginStepper: React.FC = () => {
       >
         {/* ── Header con botón volver ── */}
         <View style={styles.header}>
-          {/* Paso 0: sin flecha (no hay a dónde retroceder en producción) */}
-          {/* Paso 1: flecha que retrocede al paso anterior */}
           {stepper.currentStep === 1 ? (
             <TouchableOpacity
               onPress={() => stepper.back()}
@@ -158,40 +177,7 @@ const LoginStepper: React.FC = () => {
               <Text style={styles.backBtnText}>←</Text>
             </TouchableOpacity>
           ) : (
-            // Placeholder invisible para mantener el layout del header
             <View style={styles.backBtnPlaceholder} />
-          )}
-
-          {/* Indicador de modo */}
-          {stepper.currentStep < 2 && (
-            <View style={styles.modeToggle}>
-              <TouchableOpacity
-                onPress={() => setMode('login')}
-                style={[styles.modeBtn, mode === 'login' && styles.modeBtnActive]}
-              >
-                <Text
-                  style={[
-                    styles.modeBtnText,
-                    mode === 'login' && styles.modeBtnTextActive,
-                  ]}
-                >
-                  Entrar
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => setMode('register')}
-                style={[styles.modeBtn, mode === 'register' && styles.modeBtnActive]}
-              >
-                <Text
-                  style={[
-                    styles.modeBtnText,
-                    mode === 'register' && styles.modeBtnTextActive,
-                  ]}
-                >
-                  Registro
-                </Text>
-              </TouchableOpacity>
-            </View>
           )}
         </View>
 
@@ -227,14 +213,52 @@ const LoginStepper: React.FC = () => {
         {/* ══════════════ PASO 0: Email ══════════════ */}
         {stepper.currentStep === 0 && (
           <View style={styles.stepContent}>
+            <View style={styles.logoContainer}>
+              <TurutLogo />
+            </View>
+
+            {/* ── Selector de modo prominente ── */}
+            <View style={styles.modeToggle}>
+              <TouchableOpacity
+                onPress={() => setMode('login')}
+                style={[styles.modeBtn, mode === 'login' && styles.modeBtnActive]}
+                activeOpacity={0.8}
+              >
+                <Text style={styles.modeBtnIcon}>{mode === 'login' ? '🔓' : '🔐'}</Text>
+                <Text
+                  style={[
+                    styles.modeBtnText,
+                    mode === 'login' && styles.modeBtnTextActive,
+                  ]}
+                >
+                  Entrar
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => setMode('register')}
+                style={[styles.modeBtn, mode === 'register' && styles.modeBtnActive]}
+                activeOpacity={0.8}
+              >
+                <Text style={styles.modeBtnIcon}>{mode === 'register' ? '✨' : '✏️'}</Text>
+                <Text
+                  style={[
+                    styles.modeBtnText,
+                    mode === 'register' && styles.modeBtnTextActive,
+                  ]}
+                >
+                  Registro
+                </Text>
+              </TouchableOpacity>
+            </View>
+
             <Text style={styles.stepLabel}>PASO 1 DE 3</Text>
             <Text style={styles.stepTitle}>
-              {mode === 'login' ? '¡Hola de nuevo! 👋' : 'Únete a TURUT 🌍'}
+              {mode === 'login' ? '¡Hola de nuevo! 👋' : '¡Bienvenido a TURUT! 🌍'}
             </Text>
             <Text style={styles.stepSubtitle}>
               {mode === 'login'
                 ? 'Ingresa tu email para continuar'
-                : 'Empecemos con tu dirección de email'}
+                : 'Crea tu cuenta y descubre experiencias únicas'}
             </Text>
 
             <View style={styles.fieldWrap}>
@@ -326,6 +350,44 @@ const LoginStepper: React.FC = () => {
                 <Text style={styles.fieldError}>{password.error}</Text>
               ) : null}
             </View>
+
+            {/* Link "¿Olvidaste tu contraseña?" (solo login) */}
+            {mode === 'login' && (
+              <TouchableOpacity
+                onPress={() => navigation.navigate('ForgotPassword' as any)}
+                style={styles.forgotPasswordBtn}
+                activeOpacity={0.7}
+              >
+                <Text style={styles.forgotPasswordText}>
+                  ¿Olvidaste tu contraseña?
+                </Text>
+              </TouchableOpacity>
+            )}
+
+            {/* Checkbox de Términos y Condiciones (solo registro) */}
+            {mode === 'register' && (
+              <View style={styles.termsRow}>
+                <TouchableOpacity
+                  onPress={() => setTermsAccepted(!termsAccepted)}
+                  style={[
+                    styles.checkbox,
+                    termsAccepted && styles.checkboxChecked,
+                  ]}
+                  activeOpacity={0.7}
+                >
+                  {termsAccepted && <Text style={styles.checkmark}>✓</Text>}
+                </TouchableOpacity>
+                <Text style={styles.termsText}>
+                  Acepto los{' '}
+                  <Text
+                    style={styles.termsLink}
+                    onPress={() => navigation.navigate('TermsConditions' as any)}
+                  >
+                    Términos y Condiciones
+                  </Text>
+                </Text>
+              </View>
+            )}
           </View>
         )}
 
@@ -390,9 +452,8 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
     paddingHorizontal: 20,
-    marginBottom: 20,
+    marginBottom: 12,
     minHeight: 40,
   },
   backBtn: {
@@ -403,7 +464,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  // Mismo tamaño que backBtn para no desplazar el layout
   backBtnPlaceholder: {
     width: 36,
     height: 36,
@@ -412,24 +472,47 @@ const styles = StyleSheet.create({
     color: colors.textPrimary,
     fontSize: 16,
   },
+  // ─── Segmented control prominente ───
   modeToggle: {
     flexDirection: 'row',
     backgroundColor: colors.surfaceContainerHigh,
-    borderRadius: 20,
-    padding: 3,
+    borderRadius: 16,
+    padding: 4,
+    marginBottom: 24,
+    borderWidth: 1,
+    borderColor: colors.outline,
   },
   modeBtn: {
-    paddingHorizontal: 16,
-    paddingVertical: 6,
-    borderRadius: 17,
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 14,
+    borderRadius: 13,
+    gap: 8,
   },
   modeBtnActive: {
     backgroundColor: colors.primary,
+    ...Platform.select({
+      web: {
+        boxShadow: '0 0 18px rgba(160, 32, 240, 0.5), 0 2px 8px rgba(0,0,0,0.3)',
+      } as any,
+      default: {
+        shadowColor: colors.primary,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.5,
+        shadowRadius: 10,
+        elevation: 6,
+      },
+    }),
+  },
+  modeBtnIcon: {
+    fontSize: 16,
   },
   modeBtnText: {
+    ...textStyles.bodySemiBold,
     color: colors.textMuted,
-    fontSize: 13,
-    fontWeight: '600',
+    fontSize: 15,
   },
   modeBtnTextActive: {
     color: colors.onPrimary,
@@ -467,6 +550,10 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary,
     width: 22,
   },
+  logoContainer: {
+    alignItems: 'center',
+    marginBottom: 24,
+  },
   // Contenido del paso
   stepContent: {
     flex: 1,
@@ -480,21 +567,19 @@ const styles = StyleSheet.create({
     minHeight: 200,
   },
   stepLabel: {
-    fontSize: 11,
-    fontWeight: '700',
+    ...textStyles.chipLabel,
     color: colors.primary,
-    letterSpacing: 1.5,
     marginBottom: 8,
   },
   stepTitle: {
+    ...textStyles.headlineLarge,
     fontSize: 28,
-    fontWeight: '800',
     color: colors.textPrimary,
     marginBottom: 6,
     lineHeight: 34,
   },
   stepSubtitle: {
-    fontSize: 14,
+    ...textStyles.body,
     color: colors.textMuted,
     marginBottom: 28,
   },
@@ -508,13 +593,12 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   fieldLabel: {
+    ...textStyles.meta,
     fontSize: 12,
-    fontWeight: '600',
     color: colors.textSecondary,
-    letterSpacing: 0.5,
-    textTransform: 'uppercase',
   },
   input: {
+    ...textStyles.bodyMedium,
     height: 52,
     backgroundColor: colors.surfaceContainerHigh,
     borderRadius: 14,
@@ -528,9 +612,58 @@ const styles = StyleSheet.create({
     borderColor: colors.error,
   },
   fieldError: {
+    ...textStyles.body,
     fontSize: 12,
     color: colors.error,
     marginTop: 2,
+  },
+  // ¿Olvidaste tu contraseña?
+  forgotPasswordBtn: {
+    alignSelf: 'flex-end',
+    paddingVertical: 4,
+    marginBottom: 4,
+  },
+  forgotPasswordText: {
+    ...textStyles.bodySemiBold,
+    color: colors.primary,
+    fontSize: 13,
+  },
+  // Términos y Condiciones
+  termsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    marginTop: 8,
+    marginBottom: 8,
+  },
+  checkbox: {
+    width: 24,
+    height: 24,
+    borderRadius: 6,
+    borderWidth: 2,
+    borderColor: colors.textMuted,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.surfaceContainerHigh,
+  },
+  checkboxChecked: {
+    backgroundColor: colors.primary,
+    borderColor: colors.primary,
+  },
+  checkmark: {
+    color: colors.onPrimary,
+    fontSize: 14,
+    fontWeight: '700',
+  },
+  termsText: {
+    ...textStyles.body,
+    color: colors.textMuted,
+    flex: 1,
+  },
+  termsLink: {
+    color: colors.primary,
+    fontWeight: '700',
+    textDecorationLine: 'underline',
   },
   // Footer + botón
   footer: {
@@ -548,13 +681,14 @@ const styles = StyleSheet.create({
     opacity: 0.35,
   },
   primaryBtnText: {
+    ...textStyles.bodyBold,
     color: colors.onPrimary,
     fontSize: 16,
-    fontWeight: '700',
     letterSpacing: 0.3,
   },
   // Paso de carga/éxito
   loadingText: {
+    ...textStyles.body,
     color: colors.textMuted,
     fontSize: 15,
     marginTop: 12,
@@ -563,12 +697,12 @@ const styles = StyleSheet.create({
     fontSize: 56,
   },
   successTitle: {
+    ...textStyles.headlineLarge,
     fontSize: 28,
-    fontWeight: '800',
     color: colors.textPrimary,
   },
   successSubtitle: {
-    fontSize: 14,
+    ...textStyles.body,
     color: colors.textMuted,
   },
 });

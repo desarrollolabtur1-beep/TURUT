@@ -14,6 +14,8 @@ import MainTabs from './MainTabs';
 import LandingOverlay from '../screens/LandingOverlay';
 import SplashScreen from '../screens/auth/SplashScreen';
 import LoginStepper from '../screens/auth/LoginStepper';
+import TermsScreen from '../screens/auth/TermsScreen';
+import ForgotPasswordScreen from '../screens/auth/ForgotPasswordScreen';
 import { useAuth } from '../context/AuthContext';
 import AdminDashboardScreen from '../screens/admin/AdminDashboardScreen';
 // 🧪 Sandbox — solo se carga si EXPERIMENTS_ENABLED = true
@@ -24,6 +26,8 @@ export type RootStackParamList = {
   MainTabs: undefined;
   Splash: undefined;
   Login: undefined;
+  TermsConditions: undefined;
+  ForgotPassword: undefined;
   Landing: { destIndex: number };
   AdminDashboard: undefined;
   Experiments: undefined; // 🧪 Sandbox screen
@@ -81,6 +85,21 @@ const AppNavigator: React.FC = () => {
             {/* Flujo sin sesión: Splash → Login */}
             <Stack.Screen name="Splash" component={SplashScreen} />
             <Stack.Screen name="Login" component={LoginStepper} />
+            <Stack.Screen
+              name="TermsConditions"
+              component={TermsScreen}
+              options={{
+                presentation: 'fullScreenModal',
+                animation: 'slide_from_bottom',
+              }}
+            />
+            <Stack.Screen
+              name="ForgotPassword"
+              component={ForgotPasswordScreen}
+              options={{
+                animation: 'slide_from_right',
+              }}
+            />
           </>
         )}
       </Stack.Navigator>

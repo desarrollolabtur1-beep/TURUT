@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import rateLimit from 'express-rate-limit';
-import { register, login } from '../controllers/auth.controller';
+import { register, login, forgotPassword, resetPassword } from '../controllers/auth.controller';
 import { protect } from '../middleware/auth.middleware';
 import { User } from '../models/User.model';
 import { Request, Response } from 'express';
@@ -30,9 +30,22 @@ const registerLimiter = rateLimit({
   legacyHeaders: false,
 });
 
+const resetLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  message: {
+    success: false,
+    message: 'Demasiados intentos. Inténtalo en 15 minutos.',
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 // Public routes (con rate limiting)
 router.post('/register', registerLimiter, register);
 router.post('/login', loginLimiter, login);
+router.post('/forgot-password', resetLimiter, forgotPassword);
+router.post('/reset-password', resetLimiter, resetPassword);
 
 // Protected: get my profile
 router.get('/me', protect, async (req: Request, res: Response): Promise<void> => {

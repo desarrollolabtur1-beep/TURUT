@@ -40,6 +40,9 @@ export interface IUser extends Document {
   specialNeeds: string[];
   // ── Canal de adquisición ──
   acquisitionSource: string;
+  // ── Reset de contraseña ──
+  resetPasswordToken: string;
+  resetPasswordExpires: Date | null;
   createdAt: Date;
   updatedAt: Date;
   comparePassword(candidatePassword: string): Promise<boolean>;
@@ -203,6 +206,16 @@ const UserSchema = new Schema<IUser>(
       type: String,
       enum: ACQUISITION_SOURCE,
       default: '',
+    },
+
+    // ── Reset de contraseña ──────────────────────────────────────────────────
+    resetPasswordToken: {
+      type: String,
+      select: false,
+    },
+    resetPasswordExpires: {
+      type: Date,
+      select: false,
     },
   },
   {
