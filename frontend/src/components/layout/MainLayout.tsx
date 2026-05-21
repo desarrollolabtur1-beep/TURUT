@@ -7,7 +7,7 @@ import React from 'react';
 import { View, StyleSheet, Platform, ScrollView, Dimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
-import { colors, layout } from '../theme';
+import { colors, layout } from '../../theme';
 
 const { height: screenHeight } = Dimensions.get('window');
 

@@ -88,7 +88,8 @@ interface AuthContextType {
     email: string,
     password: string,
     firstName: string,
-    lastName: string
+    lastName: string,
+    birthDate?: string
   ) => Promise<void>;
   logout: () => Promise<void>;
   /** Re-fetch profile from backend (use after profile edits) */
@@ -190,7 +191,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     email: string,
     password: string,
     firstName: string,
-    lastName: string
+    lastName: string,
+    birthDate?: string
   ): Promise<void> => {
     try {
       const response = await authService.register({
@@ -198,6 +200,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         password,
         firstName,
         lastName,
+        ...(birthDate && { birthDate }),
       });
       // Igual que login: token en raíz, user en data.data
       const { token: newToken, data: userData } = response.data;

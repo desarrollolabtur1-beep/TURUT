@@ -7,13 +7,15 @@
  * Sandbox:
  *   Experiments (solo si EXPERIMENTS_ENABLED = true en experiments/config.ts)
  */
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import MainTabs from './MainTabs';
 import LandingOverlay from '../screens/LandingOverlay';
 import SplashScreen from '../screens/auth/SplashScreen';
 import LoginStepper from '../screens/auth/LoginStepper';
+import OnboardingScreen from '../screens/auth/OnboardingScreen';
 import TermsScreen from '../screens/auth/TermsScreen';
 import ForgotPasswordScreen from '../screens/auth/ForgotPasswordScreen';
 import { useAuth } from '../context/AuthContext';
@@ -26,6 +28,7 @@ export type RootStackParamList = {
   MainTabs: undefined;
   Splash: undefined;
   Login: undefined;
+  Onboarding: undefined;
   TermsConditions: undefined;
   ForgotPassword: undefined;
   Landing: { destIndex: number };
@@ -35,8 +38,28 @@ export type RootStackParamList = {
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
+const ONBOARDING_COMPLETE_KEY = 'turut_onboarding_complete';
+
 const AppNavigator: React.FC = () => {
   const { token } = useAuth();
+  const [showOnboarding, setShowOnboarding] = useState<boolean | null>(null);
+
+  // Check if onboarding has been completed
+  useEffect(() => {
+    (async () => {
+      try {
+        const completed = await AsyncStorage.getItem(ONBOARDING_COMPLETE_KEY);
+        setShowOnboarding(!completed);
+      } catch {
+        setShowOnboarding(false);
+      }
+    })();
+  }, []);
+
+  const handleOnboardingComplete = async () => {
+    await AsyncStorage.setItem(ONBOARDING_COMPLETE_KEY, 'true');
+    setShowOnboarding(false);
+  };
 
   return (
     <NavigationContainer
@@ -63,13 +86,19 @@ const AppNavigator: React.FC = () => {
         ──────────────────────────────────────────────────────────────────── */}
         {token ? (
           <>
+            {/* Onboarding — only shows once for new users */}
+            {showOnboarding && (
+              <Stack.Screen name="Onboarding">
+                {() => <OnboardingScreen onComplete={handleOnboardingComplete} />}
+              </Stack.Screen>
+            )}
             <Stack.Screen name="MainTabs" component={MainTabs} />
             <Stack.Screen
               name="Landing"
               component={LandingOverlay}
               options={{
                 presentation: 'fullScreenModal',
-                animation: 'slide_from_bottom',
+                animation: 'fade_from_bottom',
               }}
             />
             <Stack.Screen

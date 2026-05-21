@@ -40,7 +40,7 @@ export const CountdownTimer: React.FC<CountdownTimerProps> = ({ duration = 30 * 
 
   return (
     <GlassCard
-      style={[styles.widget, isUrgent && styles.widgetUrgent]}
+      style={isUrgent ? { ...styles.widget, ...styles.widgetUrgent } : styles.widget}
     >
       <Text style={styles.label}>OFERTA EXCLUSIVA</Text>
       <Text

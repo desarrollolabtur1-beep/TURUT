@@ -1,13 +1,28 @@
 /**
  * ImperdibleCard — Hero backdrop card for "Imperdibles" view
  * Full-width card with background image, gradient overlay, bookmark, and metadata
+ *
+ * Enhancements:
+ * - First card rendered as "Hero" (taller, with tagline)
+ * - Category color chip overlay
+ * - SVG bookmark icon instead of emoji
+ * - Press-in scale feedback (0.97)
+ * - Review count next to rating
+ * - Animated "pop" when toggling favorite
  */
-import React from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
-import Animated, { FadeInDown } from 'react-native-reanimated';
+import React, { useCallback } from 'react';
+import { View, Text, Image, TouchableOpacity, StyleSheet, Pressable } from 'react-native';
+import Animated, {
+  FadeInDown,
+  useSharedValue,
+  useAnimatedStyle,
+  withSpring,
+  withSequence,
+} from 'react-native-reanimated';
 import { LinearGradient } from 'expo-linear-gradient';
 import Svg, { Path, Circle } from 'react-native-svg';
 import { colors, shadows, radii } from '../../theme';
+import { categoryColors } from '../../theme/colors';
 import type { Destination } from '../../data/destinations';
 
 const MapPinSmall = () => (
@@ -17,13 +32,24 @@ const MapPinSmall = () => (
   </Svg>
 );
 
+/** SVG Bookmark / Star icon — filled when active */
+const BookmarkIcon = ({ filled }: { filled: boolean }) => (
+  <Svg width={18} height={18} viewBox="0 0 24 24" fill={filled ? '#FFD700' : 'none'} stroke={filled ? '#FFD700' : 'rgba(255,255,255,0.7)'} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+    <Path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14l-5-4.87 6.91-1.01L12 2z" />
+  </Svg>
+);
+
 interface ImperdibleCardProps {
   destination: Destination;
   index: number;
   isFavorite: boolean;
   onPress: () => void;
   onToggleFavorite: () => void;
+  /** If true, renders as a larger hero card */
+  isHero?: boolean;
 }
+
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export const ImperdibleCard: React.FC<ImperdibleCardProps> = ({
   destination,
@@ -31,46 +57,122 @@ export const ImperdibleCard: React.FC<ImperdibleCardProps> = ({
   isFavorite,
   onPress,
   onToggleFavorite,
+  isHero = false,
 }) => {
+  // ── Press feedback animation ──
+  const pressScale = useSharedValue(1);
+  const pressAnimStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: pressScale.value }],
+  }));
+
+  const handlePressIn = useCallback(() => {
+    pressScale.value = withSpring(0.95, { damping: 15, stiffness: 200 });
+  }, []);
+
+  const handlePressOut = useCallback(() => {
+    // Bounce up slightly before navigating — creates a "launch" feel
+    pressScale.value = withSequence(
+      withSpring(1.02, { damping: 12, stiffness: 250 }),
+      withSpring(1, { damping: 15, stiffness: 200 })
+    );
+  }, []);
+
+  // ── Favorite "pop" animation ──
+  const favScale = useSharedValue(1);
+  const favAnimStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: favScale.value }],
+  }));
+
+  const handleToggleFavorite = useCallback(() => {
+    favScale.value = withSequence(
+      withSpring(1.4, { damping: 4, stiffness: 300 }),
+      withSpring(1, { damping: 8, stiffness: 200 })
+    );
+    onToggleFavorite();
+  }, [onToggleFavorite]);
+
+  // ── Category chip colors ──
+  const catColors = categoryColors[destination.category] ?? {
+    bg: 'rgba(255,255,255,0.15)',
+    text: '#FFFFFF',
+    border: 'rgba(255,255,255,0.2)',
+  };
+
+  const cardHeight = isHero ? 280 : 200;
+
   return (
     <Animated.View entering={FadeInDown.delay(index * 80).duration(450).springify()}>
-      <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.95}>
+      <AnimatedPressable
+        style={[styles.card, { height: cardHeight }, pressAnimStyle]}
+        onPress={onPress}
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
+      >
         {/* Background Image */}
         <View style={styles.bgImg}>
-          <Image source={destination.img} style={styles.img} resizeMode="cover" />
-          {/* Gradient Overlay */}
-          <View style={styles.gradient} />
+          <Image source={destination.img} style={styles.img} resizeMode="cover" resizeMethod="resize" />
         </View>
 
-        {/* Bookmark */}
-        <TouchableOpacity
+        {/* ── Category Chip (top-left) ── */}
+        <View
           style={[
-            styles.bookmark,
-            isFavorite && styles.bookmarkActive,
+            styles.categoryChip,
+            {
+              backgroundColor: catColors.bg,
+              borderColor: catColors.border,
+            },
           ]}
-          onPress={(e) => {
-            e.stopPropagation?.();
-            onToggleFavorite();
-          }}
-          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
         >
-          <Text style={[styles.bookmarkIcon, isFavorite && styles.bookmarkIconActive]}>
-            ⭐
+          <Text style={[styles.categoryText, { color: catColors.text }]}>
+            {destination.category}
           </Text>
-        </TouchableOpacity>
+        </View>
+
+        {/* ── Discount Badge (if discount > 0 and hero) ── */}
+        {isHero && destination.discount > 0 && (
+          <View style={styles.discountBadge}>
+            <Text style={styles.discountText}>-{destination.discount}%</Text>
+          </View>
+        )}
+
+        {/* ── Bookmark (SVG, animated pop) ── */}
+        <Animated.View style={[styles.bookmarkContainer, favAnimStyle]}>
+          <TouchableOpacity
+            style={[
+              styles.bookmark,
+              isFavorite && styles.bookmarkActive,
+            ]}
+            onPress={(e) => {
+              e.stopPropagation?.();
+              handleToggleFavorite();
+            }}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          >
+            <BookmarkIcon filled={isFavorite} />
+          </TouchableOpacity>
+        </Animated.View>
 
         {/* Content */}
-        <LinearGradient 
-          colors={['transparent', 'rgba(0,0,0,0.8)', 'rgba(0,0,0,0.95)']} 
+        <LinearGradient
+          colors={['transparent', 'rgba(0,0,0,0.7)', 'rgba(0,0,0,0.95)']}
           style={styles.content}
         >
           <View style={styles.info}>
+            {/* Tagline (hero only) */}
+            {isHero && destination.tagline && (
+              <Text style={styles.tagline} numberOfLines={1}>
+                {destination.tagline}
+              </Text>
+            )}
             <View style={styles.nameRow}>
-              <Text style={styles.name} numberOfLines={1}>
+              <Text style={[styles.name, isHero && styles.nameHero]} numberOfLines={1}>
                 {destination.name}
               </Text>
               <View style={styles.ratingBadge}>
                 <Text style={styles.ratingText}>★ {destination.rating}</Text>
+                {destination.reviewCount && (
+                  <Text style={styles.reviewCount}>({destination.reviewCount})</Text>
+                )}
               </View>
             </View>
             <Text style={styles.meta}>
@@ -81,7 +183,7 @@ export const ImperdibleCard: React.FC<ImperdibleCardProps> = ({
             <MapPinSmall />
           </View>
         </LinearGradient>
-      </TouchableOpacity>
+      </AnimatedPressable>
     </Animated.View>
   );
 };
@@ -104,40 +206,61 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
-  gradient: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'transparent',
-    // Simulated gradient overlay using multiple layers
-    // RN doesn't support CSS gradients natively, so we use a semi-transparent overlay
-    // A LinearGradient could be used here for better results
-    opacity: 1,
-    // Fallback: dark overlay from bottom
-    borderRadius: 0,
-  },
-  bookmark: {
+  // ── Category chip ──
+  categoryChip: {
     position: 'absolute',
     top: 16,
-    right: 16,
-    width: 36,
-    height: 36,
-    backgroundColor: 'rgba(160, 32, 240, 0.2)',
-    borderRadius: 18,
+    left: 16,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 20,
     borderWidth: 1,
-    borderColor: colors.primary,
+    zIndex: 10,
+  },
+  categoryText: {
+    fontSize: 10,
+    fontWeight: '700',
+    textTransform: 'uppercase',
+    letterSpacing: 1.2,
+  },
+  // ── Discount Badge ──
+  discountBadge: {
+    position: 'absolute',
+    top: 16,
+    left: 'auto' as any,
+    right: 64,
+    backgroundColor: colors.accentUrgent,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8,
+    zIndex: 10,
+  },
+  discountText: {
+    color: '#FFFFFF',
+    fontSize: 11,
+    fontWeight: '800',
+    letterSpacing: 0.5,
+  },
+  // ── Bookmark ──
+  bookmarkContainer: {
+    position: 'absolute',
+    top: 12,
+    right: 12,
+    zIndex: 10,
+  },
+  bookmark: {
+    width: 38,
+    height: 38,
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+    borderRadius: 19,
+    borderWidth: 1.5,
+    borderColor: 'rgba(255,255,255,0.15)',
     alignItems: 'center',
     justifyContent: 'center',
-    zIndex: 10,
   },
   bookmarkActive: {
     backgroundColor: 'rgba(255, 215, 0, 0.2)',
-    borderColor: colors.secondary,
-  },
-  bookmarkIcon: {
-    fontSize: 14,
-    opacity: 0.5,
-  },
-  bookmarkIconActive: {
-    opacity: 1,
+    borderColor: 'rgba(255, 215, 0, 0.5)',
   },
   content: {
     position: 'absolute',
@@ -153,6 +276,15 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingRight: 16,
   },
+  tagline: {
+    color: colors.secondary,
+    fontSize: 11,
+    fontWeight: '600',
+    letterSpacing: 0.5,
+    textTransform: 'uppercase',
+    marginBottom: 4,
+    opacity: 0.9,
+  },
   nameRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -165,16 +297,28 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     flexShrink: 1,
   },
+  nameHero: {
+    fontSize: 22,
+    fontWeight: '800',
+  },
   ratingBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: 'rgba(255, 215, 0, 0.15)',
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 4,
+    gap: 3,
   },
   ratingText: {
     fontSize: 12,
     color: colors.secondary,
     fontWeight: '600',
+  },
+  reviewCount: {
+    fontSize: 10,
+    color: 'rgba(255, 215, 0, 0.6)',
+    fontWeight: '500',
   },
   meta: {
     color: colors.textSecondary,

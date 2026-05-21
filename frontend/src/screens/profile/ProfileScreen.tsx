@@ -39,6 +39,7 @@ import VisitedDestinationsList from '../../components/profile/VisitedDestination
 import ProfileCompletionBar from '../../components/profile/ProfileCompletionBar';
 import ProfileChipSelector from '../../components/profile/ProfileChipSelector';
 import ProfileSingleSelector from '../../components/profile/ProfileSingleSelector';
+import { CollapsibleSection } from '../../components/profile/CollapsibleSection';
 
 const BIO_MAX_LENGTH = 300;
 
@@ -411,11 +412,12 @@ const ProfileScreen = () => {
         {/* ════════════════════════════════════════════════════════════════ */}
         {/*                    SECCIÓN 1: SOBRE TI                        */}
         {/* ════════════════════════════════════════════════════════════════ */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>📍 Datos personales</Text>
-          </View>
-
+        <CollapsibleSection
+          title="Datos personales"
+          icon="📍"
+          isComplete={!!city && !!gender}
+          defaultExpanded={!city && !gender}
+        >
           {/* Ciudad */}
           <View style={styles.questionBlock}>
             <Text style={styles.questionLabel}>¿De qué ciudad eres?</Text>
@@ -450,16 +452,13 @@ const ProfileScreen = () => {
               onSelect={(v) => { setGender(v); markUnsaved(); }}
             />
           </View>
-        </View>
+        </CollapsibleSection>
 
-        {/* ════════════════════════════════════════════════════════════════ */}
-        {/*               SECCIÓN 2: EXPERIENCIA CON CAFÉ                 */}
-        {/* ════════════════════════════════════════════════════════════════ */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>☕ Tu conexión con el café</Text>
-          </View>
-
+        <CollapsibleSection
+          title="Tu conexión con el café"
+          icon="☕"
+          isComplete={!!coffeeExperience && coffeeInterests.length > 0}
+        >
           <View style={styles.questionBlock}>
             <Text style={styles.questionLabel}>¿Has visitado una finca cafetera antes?</Text>
             <ProfileSingleSelector
@@ -477,16 +476,13 @@ const ProfileScreen = () => {
               onToggle={(v) => { setCoffeeInterests(toggleChip(coffeeInterests, v)); markUnsaved(); }}
             />
           </View>
-        </View>
+        </CollapsibleSection>
 
-        {/* ════════════════════════════════════════════════════════════════ */}
-        {/*              SECCIÓN 3: PERFIL DE EXPLORADOR                  */}
-        {/* ════════════════════════════════════════════════════════════════ */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>🌿 Tu perfil de explorador</Text>
-          </View>
-
+        <CollapsibleSection
+          title="Tu perfil de explorador"
+          icon="🌿"
+          isComplete={experienceTypes.length > 0 && naturePreferences.length > 0}
+        >
           <View style={styles.questionBlock}>
             <Text style={styles.questionLabel}>¿Qué tipo de experiencias te interesan?</Text>
             <ProfileChipSelector
@@ -522,16 +518,13 @@ const ProfileScreen = () => {
               onSelect={(v) => { setAvailableTime(v); markUnsaved(); }}
             />
           </View>
-        </View>
+        </CollapsibleSection>
 
-        {/* ════════════════════════════════════════════════════════════════ */}
-        {/*                SECCIÓN 4: ESTILO DE VIAJE                     */}
-        {/* ════════════════════════════════════════════════════════════════ */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>🏡 Tu estilo de viaje</Text>
-          </View>
-
+        <CollapsibleSection
+          title="Tu estilo de viaje"
+          icon="🏡"
+          isComplete={!!lodgingStyle && !!connectivityPreference}
+        >
           <View style={styles.questionBlock}>
             <Text style={styles.questionLabel}>¿Qué ambiente de hospedaje prefieres?</Text>
             <ProfileSingleSelector
@@ -558,19 +551,16 @@ const ProfileScreen = () => {
               onSelect={(v) => { setEscapeTime(v); markUnsaved(); }}
             />
           </View>
-        </View>
+        </CollapsibleSection>
 
-        {/* ════════════════════════════════════════════════════════════════ */}
-        {/*              SECCIÓN 5: NECESIDADES + ADQUISICIÓN             */}
-        {/* ════════════════════════════════════════════════════════════════ */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>♿ Necesidades especiales</Text>
-          </View>
-          <Text style={styles.sectionSubtext}>
+        <CollapsibleSection
+          title="Necesidades especiales"
+          icon="♿"
+          isComplete={specialNeeds.length > 0}
+        >
+          <Text style={styles.sectionSubtextInner}>
             Nos ayuda a recomendarte destinos accesibles y preparar mejor tu experiencia.
           </Text>
-
           <View style={styles.questionBlock}>
             <ProfileChipSelector
               options={SPECIAL_NEEDS_OPTIONS}
@@ -578,13 +568,13 @@ const ProfileScreen = () => {
               onToggle={(v) => { setSpecialNeeds(toggleArrayItem(specialNeeds, v)); markUnsaved(); }}
             />
           </View>
-        </View>
+        </CollapsibleSection>
 
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>📣 ¿Cómo nos conociste?</Text>
-          </View>
-
+        <CollapsibleSection
+          title="¿Cómo nos conociste?"
+          icon="📣"
+          isComplete={!!acquisitionSource}
+        >
           <View style={styles.questionBlock}>
             <ProfileSingleSelector
               options={ACQUISITION_OPTIONS}
@@ -592,7 +582,7 @@ const ProfileScreen = () => {
               onSelect={(v) => { setAcquisitionSource(v); markUnsaved(); }}
             />
           </View>
-        </View>
+        </CollapsibleSection>
 
         {/* ── Save Button (floating style) ─────────────────────────────── */}
         {hasUnsavedChanges && (
@@ -702,6 +692,12 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
     fontSize: 12,
     paddingHorizontal: spacing.xxl,
+    marginBottom: spacing.md,
+  },
+  sectionSubtextInner: {
+    ...textStyles.body,
+    color: colors.textMuted,
+    fontSize: 12,
     marginBottom: spacing.md,
   },
   editLink: {

@@ -9,7 +9,7 @@ import { env } from '../config/env';
 // @access  Public
 export const register = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { email, password, firstName, lastName } = req.body;
+    const { email, password, firstName, lastName, birthDate } = req.body;
 
     // Validation
     if (!email || !password || !firstName || !lastName) {
@@ -37,6 +37,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       password,
       firstName,
       lastName,
+      ...(birthDate && { birthDate: new Date(birthDate) }),
     });
 
     res.status(201).json({
@@ -47,6 +48,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
         firstName: user.firstName,
         lastName: user.lastName,
         role: user.role,
+        birthDate: user.birthDate,
       },
       token: generateToken(user._id.toString()),
     });

@@ -3,7 +3,7 @@
  *
  * Pasos:
  *   0 — Bienvenida + email
- *   1 — Contraseña (Login) ó Nombre + Contraseña (Register)
+ *   1 — Contraseña (Login) ó Nombre + Contraseña + Fecha (Register)
  *   2 — Confirmación / loading
  *
  * Hooks usados:
@@ -17,7 +17,7 @@
  * La diferencia clave: aquí NO se llama navigation.navigate('MainTabs'),
  * ya que el auth guard en AppNavigator maneja la transición automáticamente.
  */
-import React, { useRef } from 'react';
+import React, { useRef, useMemo } from 'react';
 import {
   View,
   Text,
@@ -31,6 +31,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
+import Svg, { Path } from 'react-native-svg';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../../navigation/AppNavigator';
@@ -93,6 +94,42 @@ const LoginStepper: React.FC = () => {
   const lastName = useFormField('', nameValidator);
   const [termsAccepted, setTermsAccepted] = React.useState(false);
 
+  // ── Fecha de nacimiento ──
+  const [birthDay, setBirthDay] = React.useState('');
+  const [birthMonth, setBirthMonth] = React.useState('');
+  const [birthYear, setBirthYear] = React.useState('');
+  const [birthDateTouched, setBirthDateTouched] = React.useState(false);
+
+  const currentYear = new Date().getFullYear();
+  const MONTHS = [
+    'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre',
+  ];
+
+  const birthDateError = useMemo(() => {
+    if (!birthDateTouched) return '';
+    if (!birthDay || !birthMonth || !birthYear) return 'Completa tu fecha de nacimiento';
+    const d = parseInt(birthDay, 10);
+    const m = parseInt(birthMonth, 10);
+    const y = parseInt(birthYear, 10);
+    if (isNaN(d) || isNaN(m) || isNaN(y)) return 'Fecha inválida';
+    if (d < 1 || d > 31 || m < 1 || m > 12) return 'Fecha inválida';
+    const date = new Date(y, m - 1, d);
+    if (date.getDate() !== d || date.getMonth() !== m - 1) return 'Fecha inválida';
+    // Debe tener al menos 13 años
+    const today = new Date();
+    let age = today.getFullYear() - y;
+    const monthDiff = today.getMonth() - (m - 1);
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < d)) age--;
+    if (age < 13) return 'Debes tener al menos 13 años';
+    return '';
+  }, [birthDay, birthMonth, birthYear, birthDateTouched]);
+
+  const isBirthDateValid = birthDay !== '' && birthMonth !== '' && birthYear !== '' && birthDateError === '';
+  const birthDateISO = isBirthDateValid
+    ? new Date(parseInt(birthYear, 10), parseInt(birthMonth, 10) - 1, parseInt(birthDay, 10)).toISOString()
+    : null;
+
   // Animación de la barra de progreso
   const progressAnim = useRef(new Animated.Value(0)).current;
 
@@ -117,6 +154,7 @@ const LoginStepper: React.FC = () => {
         password.value.length > 0 &&
         firstName.value.length > 0 &&
         lastName.value.length > 0 &&
+        isBirthDateValid &&
         termsAccepted;
 
   const handleNext = async () => {
@@ -129,6 +167,7 @@ const LoginStepper: React.FC = () => {
       if (mode === 'register') {
         firstName.onBlur();
         lastName.onBlur();
+        setBirthDateTouched(true);
       }
       if (!canAdvanceStep1) return;
       // Avanzar al paso de carga y ejecutar autenticación
@@ -138,7 +177,7 @@ const LoginStepper: React.FC = () => {
         if (mode === 'login') {
           await login(email.value, password.value);
         } else {
-          await register(email.value, password.value, firstName.value, lastName.value);
+          await register(email.value, password.value, firstName.value, lastName.value, birthDateISO ?? undefined);
         }
         // ✅ Login exitoso — el auth guard en AppNavigator detecta el token
         // y transiciona a MainTabs automáticamente. No se necesita navigate().
@@ -330,6 +369,88 @@ const LoginStepper: React.FC = () => {
                       <Text style={styles.fieldError}>{lastName.error}</Text>
                     ) : null}
                   </View>
+                </View>
+
+                {/* ── Fecha de nacimiento ── */}
+                <View style={styles.fieldWrap}>
+                  <Text style={styles.fieldLabel}>Fecha de nacimiento</Text>
+                  <View style={styles.fieldRow}>
+                    {/* Día */}
+                    <View style={[styles.datePickerWrap, { flex: 0.8 }]}>
+                      <TextInput
+                        style={[
+                          styles.input,
+                          styles.dateInput,
+                          birthDateTouched && birthDateError ? styles.inputError : null,
+                        ]}
+                        placeholder="Día"
+                        placeholderTextColor={colors.textMuted}
+                        value={birthDay}
+                        onChangeText={(t) => {
+                          const clean = t.replace(/[^0-9]/g, '').slice(0, 2);
+                          setBirthDay(clean);
+                        }}
+                        onBlur={() => setBirthDateTouched(true)}
+                        keyboardType="number-pad"
+                        maxLength={2}
+                      />
+                    </View>
+
+                    {/* Mes */}
+                    <View style={[styles.datePickerWrap, { flex: 1.4 }]}>
+                      <TouchableOpacity
+                        style={[
+                          styles.input,
+                          styles.dateInput,
+                          styles.dateSelect,
+                          birthDateTouched && birthDateError ? styles.inputError : null,
+                        ]}
+                        activeOpacity={0.7}
+                        onPress={() => {
+                          // Cycle through months
+                          const current = parseInt(birthMonth, 10) || 0;
+                          const next = current >= 12 ? 1 : current + 1;
+                          setBirthMonth(String(next));
+                        }}
+                      >
+                        <Text
+                          style={[
+                            styles.dateSelectText,
+                            !birthMonth && { color: colors.textMuted },
+                          ]}
+                        >
+                          {birthMonth ? MONTHS[parseInt(birthMonth, 10) - 1] : 'Mes'}
+                        </Text>
+                        <Svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke={colors.textMuted} strokeWidth={2.5}>
+                          <Path d="M6 9l6 6 6-6" />
+                        </Svg>
+                      </TouchableOpacity>
+                    </View>
+
+                    {/* Año */}
+                    <View style={[styles.datePickerWrap, { flex: 1 }]}>
+                      <TextInput
+                        style={[
+                          styles.input,
+                          styles.dateInput,
+                          birthDateTouched && birthDateError ? styles.inputError : null,
+                        ]}
+                        placeholder="Año"
+                        placeholderTextColor={colors.textMuted}
+                        value={birthYear}
+                        onChangeText={(t) => {
+                          const clean = t.replace(/[^0-9]/g, '').slice(0, 4);
+                          setBirthYear(clean);
+                        }}
+                        onBlur={() => setBirthDateTouched(true)}
+                        keyboardType="number-pad"
+                        maxLength={4}
+                      />
+                    </View>
+                  </View>
+                  {birthDateTouched && birthDateError ? (
+                    <Text style={styles.fieldError}>{birthDateError}</Text>
+                  ) : null}
                 </View>
               </>
             )}
@@ -586,7 +707,7 @@ const styles = StyleSheet.create({
   // Campos
   fieldRow: {
     flexDirection: 'row',
-    gap: 12,
+    gap: 10,
   },
   fieldWrap: {
     marginBottom: 16,
@@ -616,6 +737,25 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: colors.error,
     marginTop: 2,
+  },
+  // ── Date picker ──
+  datePickerWrap: {
+    // flex is set inline
+  },
+  dateInput: {
+    textAlign: 'center',
+    paddingHorizontal: 8,
+  },
+  dateSelect: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+  },
+  dateSelectText: {
+    ...textStyles.bodyMedium,
+    fontSize: 15,
+    color: colors.textPrimary,
   },
   // ¿Olvidaste tu contraseña?
   forgotPasswordBtn: {

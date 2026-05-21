@@ -22,9 +22,11 @@ interface SwipeCardProps {
 }
 
 export const SwipeCard: React.FC<SwipeCardProps> = ({ destination, timerText = '04:59' }) => {
+  const cardImage = destination.tinderImg || destination.img;
+
   return (
     <View style={styles.card}>
-      <Image source={destination.img} style={styles.image} resizeMode="cover" />
+      <Image source={cardImage} style={styles.image} resizeMode="cover" resizeMethod="resize" />
 
       {/* Timer chip */}
       <GlassCard style={styles.timerChip}>
