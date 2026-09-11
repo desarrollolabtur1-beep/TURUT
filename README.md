@@ -1,60 +1,67 @@
 # TURUT
 
-Landing page para experiencias turísticas y reservas.
+Aplicación móvil y backend para descubrimiento y reserva de experiencias turísticas.
 
-## Estructura del Proyecto
+## Stack Tecnológico
 
-```
-Landing-APP/
-├── assets/                 # Imágenes y recursos estáticos
-├── backend/                # API REST (Express + TypeScript)
-│   └── src/
-│       ├── controllers/     # auth, booking, experience
-│       ├── middleware/      # auth, error
-│       ├── config/          # database, env
-│       ├── types/           # Definiciones TypeScript
-│       └── server.ts        # Punto de entrada
-├── frontend/               # Aplicación frontend
-│   └── src/
-│       ├── services/        # API service
-│       ├── store/           # Estado global
-│       ├── theme/           # Colores, tipografía, espaciado
-│       └── types/           # Definiciones TypeScript
-└── .stitch/                # Diseños HTML/CSS
-```
+- **Backend:** Express + TypeScript + Mongoose (MongoDB) + JWT
+- **Frontend:** React Native + @react-navigation (Native Stack + Bottom Tabs) + Context / Hooks
+- **Data actual de UI:** `data/destinations.ts` y `data/events.ts` (mock local)
+- **API Base:** Dev: `http://localhost:5000/api` | Prod: `https://api.turut.online/api`
 
-## Backend
+## Estructura Real
 
-- **Framework:** Express.js + TypeScript
-- **Autenticación:** JWT
-- **Controladores:** Auth, Booking, Experience
-- **Puerto:** Configurable via `.env`
+- `backend/src/server.ts`: Punto de entrada y verificación de salud (`/api/health`)
+- `backend/src/routes/`: Rutas modulares (`auth`, `experience`, `booking`)
+- `backend/src/models/`: Modelos Mongoose (`User`, `Experience`, `Booking`)
+- `frontend/src/navigation/AppNavigator.tsx`: Flujo Splash → Login → MainTabs → Landing
+- `frontend/src/navigation/MainTabs.tsx`: Tabs principales (Imperdibles, Tu Ruta, Radar)
 
-## Frontend
+## Endpoints Reales
 
-- **Framework:** React
-- **Estado:** Zustand (store local)
-- **API:** Servicio de comunicación con backend
-- **Tema:** Sistema de diseño con colores, tipografía y espaciado
+| Método | Endpoint | Estado de Auth |
+|---|---|---|
+| `GET` | `/api/health` | Público |
+| `POST` | `/api/auth/register` | Público |
+| `POST` | `/api/auth/login` | Público |
+| `GET` | `/api/auth/me` | Privado (JWT) |
+| `GET` | `/api/experiences` | Público |
+| `GET` | `/api/experiences/featured` | Público |
+| `GET` | `/api/experiences/my-experiences` | Privado (JWT) |
+| `POST` | `/api/experiences` | Privado (JWT) |
+| `GET` | `/api/experiences/:id` | Privado (JWT) |
+| `PUT` | `/api/experiences/:id` | Privado (JWT) |
+| `DELETE` | `/api/experiences/:id` | Privado (JWT) |
 
-## Primeros Pasos
+> *Nota: Existen adicionalmente 5 endpoints de reservas en `backend/src/routes/booking.routes.ts` (GET/POST `/api/bookings`, GET/PUT/DELETE `/api/bookings/:id`), todos bajo autenticación JWT obligatoria.*
+
+## Variables de Entorno (Backend)
+
+Documentadas en `.env.example`:
+- `NODE_ENV`: Entorno de ejecución (`development`, `production`).
+- `PORT`: Puerto de escucha del servidor HTTP.
+- `MONGODB_URI`: Cadena de conexión para MongoDB vía Mongoose.
+- `JWT_SECRET`: Secreto criptográfico para firma y verificación de tokens JWT.
+- `CORS_ORIGIN`: Origen o dominios autorizados para solicitudes CORS.
+
+> *Nota: `JWT_EXPIRES_IN` está cargada pero no se usa; el token firma 7d fijo.*
+
+## Setup
 
 ### Backend
-
 ```bash
-cd backend
-npm install
-npm run dev
+cd backend && npm install && npm run dev
 ```
+*(Requiere Mongo corriendo + .env)*
 
 ### Frontend
-
 ```bash
-cd frontend
-npm install
-npm run dev
+cd frontend && npm install && npm run [start|android|ios]
 ```
 
-## Repositorio
+## Estado actual y deuda conocida
 
-https://github.com/desarrollolabtur1-beep/TURUT
+- **UI viva desacoplada:** La UI viva (Home/Discover/Radar) usa data mock (`data/destinations.ts` y `data/events.ts`), no la API.
+- **Pantallas huérfanas:** `LoginScreen`, `RegisterScreen`, `ProfileScreen`, `BookingsScreen`, `ExperienceDetailScreen`, `MainLayout`, `NeonText`.
+- **Middleware inactivo:** `authorize` definido pero no montado.
+- **Tipado desfasado:** `types/navigation.ts` desactualizado vs rutas reales.

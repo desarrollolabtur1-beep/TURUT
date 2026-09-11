@@ -1,0 +1,126 @@
+{
+  "generated": "2026-09-11",
+  "method": "grep+read (verified file:line). jcodemunch MCP catalog available (search_ast) but not used: requires indexed repo owner/name. Subagent Haiku unavailable (not in allowed model list).",
+  "backend": {
+    "stack": "Express + TypeScript + Mongoose",
+    "models": [
+      { "name": "User", "file": "backend/src/models/User.model.ts:16", "note": "Mongoose Schema: email, password, firstName, lastName, role user|admin, isActive" },
+      { "name": "Experience", "file": "backend/src/models/Experience.model.ts:21", "note": "Mongoose Schema: title, location, price, duration, category, images, dates, featured, createdBy" },
+      { "name": "Booking", "file": "backend/src/models/Booking.model.ts:17", "note": "Mongoose Schema: user, experience, bookingDate, participants, totalPrice, status, paymentId" }
+    ],
+    "orm": "Mongoose (not Prisma, not raw SQL)",
+    "auth_middleware": [
+      { "name": "protect", "file": "backend/src/middleware/auth.middleware.ts:10", "note": "JWT Bearer; sets req.user and req.userId" },
+      { "name": "authorize", "file": "backend/src/middleware/auth.middleware.ts:77", "note": "RBAC by role; defined but never applied to any route" }
+    ],
+    "routes": [
+      { "method": "GET", "path": "/api/health", "file": "backend/src/server.ts:30", "auth": false },
+      { "method": "POST", "path": "/api/auth/register", "file": "backend/src/routes/auth.routes.ts:10", "auth": false },
+      { "method": "POST", "path": "/api/auth/login", "file": "backend/src/routes/auth.routes.ts:11", "auth": false },
+      { "method": "GET", "path": "/api/auth/me", "file": "backend/src/routes/auth.routes.ts:14", "auth": true },
+      { "method": "GET", "path": "/api/experiences", "file": "backend/src/routes/experience.routes.ts:16", "auth": false },
+      { "method": "GET", "path": "/api/experiences/featured", "file": "backend/src/routes/experience.routes.ts:17", "auth": false },
+      { "method": "GET", "path": "/api/experiences/my-experiences", "file": "backend/src/routes/experience.routes.ts:22", "auth": true },
+      { "method": "POST", "path": "/api/experiences", "file": "backend/src/routes/experience.routes.ts:23", "auth": true },
+      { "method": "PUT", "path": "/api/experiences/:id", "file": "backend/src/routes/experience.routes.ts:24", "auth": true },
+      { "method": "DELETE", "path": "/api/experiences/:id", "file": "backend/src/routes/experience.routes.ts:25", "auth": true },
+      { "method": "GET", "path": "/api/experiences/:id", "file": "backend/src/routes/experience.routes.ts:28", "auth": true, "note": "After router.use(protect) line 20 — detail is NOT public" },
+      { "method": "GET", "path": "/api/bookings", "file": "backend/src/routes/booking.routes.ts:16", "auth": true },
+      { "method": "GET", "path": "/api/bookings/:id", "file": "backend/src/routes/booking.routes.ts:17", "auth": true },
+      { "method": "POST", "path": "/api/bookings", "file": "backend/src/routes/booking.routes.ts:18", "auth": true },
+      { "method": "PUT", "path": "/api/bookings/:id", "file": "backend/src/routes/booking.routes.ts:19", "auth": true },
+      { "method": "DELETE", "path": "/api/bookings/:id", "file": "backend/src/routes/booking.routes.ts:20", "auth": true }
+    ],
+    "mounts": [
+      { "prefix": "/api/auth", "file": "backend/src/server.ts:45" },
+      { "prefix": "/api/experiences", "file": "backend/src/server.ts:46" },
+      { "prefix": "/api/bookings", "file": "backend/src/server.ts:47" }
+    ],
+    "env": [
+      { "var": "NODE_ENV", "in_example": true, "used": true, "refs": ["backend/src/config/env.ts:19", "backend/src/middleware/error.middleware.ts:50"] },
+      { "var": "PORT", "in_example": true, "used": true, "refs": ["backend/src/config/env.ts:20"] },
+      { "var": "MONGODB_URI", "in_example": true, "used": true, "refs": ["backend/src/config/env.ts:21"] },
+      { "var": "JWT_SECRET", "in_example": true, "used": true, "refs": ["backend/src/config/env.ts:22"] },
+      { "var": "CORS_ORIGIN", "in_example": true, "used": true, "refs": ["backend/src/config/env.ts:24"] },
+      { "var": "JWT_EXPIRES_IN", "in_example": false, "used": "partial", "refs": ["backend/src/config/env.ts:23"], "note": "Loaded in env but generateToken hardcodes 7d at auth.controller.ts:120-122" }
+    ]
+  },
+  "frontend": {
+    "stack": "React Native / Expo-style (react-native, @react-navigation), NOT React Router v6",
+    "router": "@react-navigation/native-stack + bottom-tabs",
+    "zustand": {
+      "present": false,
+      "readme_claimed": true,
+      "actual_store": {
+        "file": "frontend/src/store/useFavorites.ts:12",
+        "type": "custom hook + useState + AsyncStorage",
+        "state": ["favorites:number[]", "matches:number[]", "swipePosition:number", "loaded:boolean"]
+      },
+      "auth": {
+        "file": "frontend/src/context/AuthContext.tsx:62",
+        "type": "React Context, not Zustand",
+        "state": ["token", "user", "loading", "isAuthenticated"]
+      }
+    },
+    "routes": [
+      { "path": "Splash", "component": "SplashScreen", "file": "frontend/src/navigation/AppNavigator.tsx:73", "store": "none (nav only)", "when": "no token" },
+      { "path": "Login", "component": "LoginStepper (screens/auth)", "file": "frontend/src/navigation/AppNavigator.tsx:74", "store": "AuthContext", "when": "no token" },
+      { "path": "MainTabs", "component": "MainTabs", "file": "frontend/src/navigation/AppNavigator.tsx:60", "store": "AuthContext token", "when": "token set" },
+      { "path": "Imperdibles", "component": "HomeScreen", "file": "frontend/src/navigation/MainTabs.tsx:166", "store": "useFavorites" },
+      { "path": "Tu Ruta", "component": "DiscoverScreen", "file": "frontend/src/navigation/MainTabs.tsx:170", "store": "useFavorites" },
+      { "path": "Radar", "component": "RadarScreen", "file": "frontend/src/navigation/MainTabs.tsx:174", "store": "none (local events.ts)" },
+      { "path": "Landing", "component": "LandingOverlay", "file": "frontend/src/navigation/AppNavigator.tsx:61", "store": "none", "when": "token set, modal" },
+      { "path": "Experiments", "component": "ExperimentsNavigator", "file": "frontend/src/navigation/AppNavigator.tsx:50", "store": "n/a", "when": "EXPERIMENTS_ENABLED=true; currently false at experiments/config.ts:12" },
+      { "path": "ExperimentsMenu", "component": "ExperimentsMenu", "file": "frontend/src/experiments/ExperimentsNavigator.tsx:37", "store": "none" },
+      { "path": "LoginStepper (exp)", "component": "experiments/auth/LoginStepper", "file": "frontend/src/experiments/ExperimentsNavigator.tsx:38", "store": "AuthContext" }
+    ],
+    "typed_but_unmounted": {
+      "file": "frontend/src/types/navigation.ts:3",
+      "names": ["Home", "Register", "ExperienceDetail", "Profile", "Bookings"]
+    },
+    "api_calls": [
+      { "endpoint": "POST /auth/register", "method": "POST", "defined": "frontend/src/services/api.service.ts:82", "called_from": "AuthContext.tsx:146 via authService.register" },
+      { "endpoint": "POST /auth/login", "method": "POST", "defined": "frontend/src/services/api.service.ts:85", "called_from": "AuthContext.tsx:120 via authService.login" },
+      { "endpoint": "GET /auth/me", "method": "GET", "defined": "frontend/src/services/api.service.ts:87", "called_from": "AuthContext.tsx:94 via authService.getProfile" },
+      { "endpoint": "GET /experiences/:id", "method": "GET", "defined": "frontend/src/services/api.service.ts:94", "called_from": "ExperienceDetailScreen.tsx:39 (screen not mounted)" },
+      { "endpoint": "POST /bookings", "method": "POST", "defined": "frontend/src/services/api.service.ts:105", "called_from": "ExperienceDetailScreen.tsx:87 (screen not mounted)" },
+      { "endpoint": "GET /bookings", "method": "GET", "defined": "frontend/src/services/api.service.ts:103", "called_from": "BookingsScreen.tsx:22 (screen not mounted)" },
+      { "endpoint": "GET /experiences", "method": "GET", "defined": "frontend/src/services/api.service.ts:92", "called_from": "defined only — no caller in src/" },
+      { "endpoint": "GET /experiences/featured", "method": "GET", "defined": "frontend/src/services/api.service.ts:93", "called_from": "defined only — no caller in src/" },
+      { "endpoint": "POST /experiences", "method": "POST", "defined": "frontend/src/services/api.service.ts:95", "called_from": "defined only — no caller in src/" },
+      { "endpoint": "PUT /experiences/:id", "method": "PUT", "defined": "frontend/src/services/api.service.ts:97", "called_from": "defined only — no caller in src/" },
+      { "endpoint": "DELETE /experiences/:id", "method": "DELETE", "defined": "frontend/src/services/api.service.ts:98", "called_from": "defined only — no caller in src/" },
+      { "endpoint": "GET /bookings/:id", "method": "GET", "defined": "frontend/src/services/api.service.ts:104", "called_from": "defined only — no caller in src/" },
+      { "endpoint": "PUT /bookings/:id", "method": "PUT", "defined": "frontend/src/services/api.service.ts:107", "called_from": "defined only — no caller in src/" },
+      { "endpoint": "DELETE /bookings/:id", "method": "DELETE", "defined": "frontend/src/services/api.service.ts:108", "called_from": "defined only — no caller in src/" }
+    ],
+    "api_base": {
+      "file": "frontend/src/services/api.service.ts:3",
+      "dev": "http://localhost:5000/api",
+      "prod": "https://api.turut.online/api"
+    },
+    "live_ui_data": "Home/Discover/Radar use frontend/src/data/destinations.ts and events.ts — not API",
+    "orphan_screens_not_in_navigator": [
+      { "file": "frontend/src/screens/auth/LoginScreen.tsx:14", "note": "replaced by LoginStepper in AppNavigator" },
+      { "file": "frontend/src/screens/auth/RegisterScreen.tsx:14", "note": "Register folded into LoginStepper; type Register unused" },
+      { "file": "frontend/src/screens/profile/ProfileScreen.tsx:14", "note": "not in AppNavigator/MainTabs" },
+      { "file": "frontend/src/screens/bookings/BookingsScreen.tsx:14", "note": "not in navigator; has API calls" },
+      { "file": "frontend/src/screens/experience/ExperienceDetailScreen.tsx:17", "note": "not in navigator; has API calls" },
+      { "file": "frontend/src/components/layout/MainLayout.tsx:17", "note": "no imports from other files" },
+      { "file": "frontend/src/components/ui/NeonText.tsx:15", "note": "no imports from other files" }
+    ]
+  },
+  "discrepancies": [
+    "README: React + Zustand. Código: React Native navigation + useFavorites hook (useFavorites.ts:12), AuthContext not Zustand. No create() from zustand in src/.",
+    "README: frontend/src/services + store + theme. Código: también screens/, navigation/, data/ estáticos, context/.",
+    "README árbol Landing-APP/; repo se llama TURUT. Contexto marca: Wohin.",
+    "README no lista MongoDB; código Mongoose + MONGODB_URI (.env.example:8).",
+    "README puerto via .env; frontend API fija localhost:5000 / api.turut.online (api.service.ts:3-6).",
+    "GET /api/experiences/:id after protect (experience.routes.ts:20 then :28) so detail requires JWT; client ExperienceDetailScreen expects getById but is unmounted.",
+    "JWT_EXPIRES_IN in env.ts:23 not in .env.example; token expiry hardcoded 7d (auth.controller.ts:120).",
+    "types/navigation.ts lists Home/Register/ExperienceDetail/Profile/Bookings; AppNavigator uses Splash/Login/MainTabs/Landing.",
+    "Tabs live (Imperdibles/Tu Ruta/Radar) vs contexto Wohin módulos Destacados/Descubre/Oferta/Eventos — alineados en intención, no en nombres ni API.",
+    "authorize() never used on routes.",
+    "frontend/README.md is TypeScript upstream, not this app."
+  ]
+}

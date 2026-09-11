@@ -1,0 +1,6 @@
+{
+    "version": 1,
+    "hooks": {
+      "beforeShellExecution": "bun run .cursor/hooks/before-shell-execution.ts"
+    }
+  }

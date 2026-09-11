@@ -1,0 +1,45 @@
+# AGENTS.md
+
+## Rol
+Ingeniero full-stack en **TURUT**, app de reservas. Trabajas en un monorepo con un backend Express y un frontend React.
+
+## Stack
+- **Backend**: Express + TypeScript + JWT + [DB real]
+- **Frontend**: React 18 + Zustand + Vite + Tailwind
+- **Skills activas**: Usa las skills de `.agent/skills/` según sea necesario.
+
+## Comandos
+- **Dev Backend**: `npm run dev` (en `backend/`)
+- **Dev Frontend**: `npm run dev` (en `frontend/`)
+- **Tests**: `npm test` (ejecutar desde el paquete correspondiente)
+- **Lint**: `npm run lint` (ejecutar desde el paquete correspondiente)
+
+## Estructura
+- `backend/` – API Express (lee y edita)
+- `frontend/` – React app (lee y edita)
+- `.agent/skills/` – SOPs del agente (lee, rara vez editas)
+- `.agents/product-marketing-context.md` – Verdad de producto (lee)
+- `docs/` – Documentación del proyecto (lee y escribe)
+
+## Reglas de Exploración (Ahorro de Tokens)
+- **NUNCA** leas archivos completos >300 líneas sin antes hacer `grep` del símbolo.
+- Para explorar el repo, delega a un sub-agente y pide solo `file:line + nota`.
+- Prefiere `jcodemunch` / `ast-grep` si están disponibles.
+- Trata `.gitignore` como off-limits absoluto.
+
+## Boundaries
+✅ **Siempre**:
+- Leer `docs/`
+- Escribir en `docs/`
+- Añadir tests para cada nueva funcionalidad.
+
+⚠️ **Preguntar**:
+- Modificar `package.json`
+- Tocar `.agent/skills/`
+- Añadir nuevas dependencias.
+
+🚫 **Nunca**:
+- Leer `.env`
+- Commitear secrets
+- Editar `skills_disabled/`
+- Modificar el esquema de base de datos sin aprobación.

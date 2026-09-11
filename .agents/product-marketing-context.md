@@ -1,12 +1,12 @@
-# Product Marketing Context — Wohin
+# Product Marketing Context — Turut
 
 *Last updated: 2026-03-19*
 
 ## Product Overview
 
-**One-liner:** Wohin es la herramienta definitiva para dejar de pagar precio completo por planes mediocres en Ibagué y descubrir experiencias top con un *swipe*.
+**One-liner:** Turut es la herramienta definitiva para dejar de pagar precio completo por planes mediocres en Ibagué y descubrir experiencias top con un *swipe*.
 
-**What it does:** Wohin filtra el ruido del turismo tradicional ofreciendo acceso directo a las 5 mejores experiencias de Ibagué. A través de una interfaz tipo Tinder, los usuarios hacen *match* con su plan ideal, obtienen descuentos reales (activables mediante cronómetro al llegar al destino) y consultan eventos en tiempo real para no perderse nada de lo que ocurre en la ciudad.
+**What it does:** Turut filtra el ruido del turismo tradicional ofreciendo acceso directo a las 5 mejores experiencias de Ibagué. A través de una interfaz tipo Tinder, los usuarios hacen *match* con su plan ideal, obtienen descuentos reales (activables mediante cronómetro al llegar al destino) y consultan eventos en tiempo real para no perderse nada de lo que ocurre en la ciudad.
 
 **Product category:** Plataforma de descubrimiento estratégico de experiencias locales.
 
@@ -158,5 +158,5 @@ Información en tiempo real. La campana es el radar de la ciudad: conciertos, fe
 
 Para facilitar el acceso a la investigación completa sobre tendencias de UI/UX y benchmarks de plataformas de turismo, hemos vinculado este contexto a un proyecto en **NotebookLM**.
 
-- **Notebook de Investigación (Wohin):** [Research: Tourism Web Apps & UI/UX Strategy](https://notebooklm.google.com/notebook/b920d947-5a84-416f-a330-80beb05444ef)
+- **Notebook de Investigación (Turut):** [Research: Tourism Web Apps & UI/UX Strategy](https://notebooklm.google.com/notebook/b920d947-5a84-416f-a330-80beb05444ef)
 - **Estado:** Público (Acceso habilitado para revisión colaborativa).
