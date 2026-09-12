@@ -77,3 +77,4 @@ Filosofía: nada de esto se arregla "de paso". Cada DT se ataca en su propio spr
 | Fecha | Cambio | Por |
 |---|---|---|
 | 2026-09-12 | Creación inicial tras auditoría (PROJECT_MAP). Líneas re-verificadas en código; se corrige que `getById` sí existe y que `authorize` ya monta admin. | agente |
+| 2026-09-12 | DT-003 cerrada: JWT_EXPIRES_IN ahora se usa al firmar | agente |

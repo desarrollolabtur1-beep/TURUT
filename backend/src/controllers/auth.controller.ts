@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { User } from '../models/User.model';
-import jwt from 'jsonwebtoken';
+import jwt, { SignOptions } from 'jsonwebtoken';
 import crypto from 'crypto';
 import { env } from '../config/env';
 
@@ -120,9 +120,8 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 
 // Generate JWT
 const generateToken = (id: string): string => {
-  const expiresInSeconds = 7 * 24 * 60 * 60; // 7 days
   return jwt.sign({ id }, env.JWT_SECRET, {
-    expiresIn: expiresInSeconds,
+    expiresIn: env.JWT_EXPIRES_IN as SignOptions['expiresIn'],
   });
 };
 
