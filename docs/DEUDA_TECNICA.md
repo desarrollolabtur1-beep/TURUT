@@ -8,6 +8,8 @@ Filosofía: nada de esto se arregla "de paso". Cada DT se ataca en su propio spr
 - [DT-001](#dt-001-detalle-de-experiencia-autenticado-y-pantalla-fuera-del-navigator)
 - [DT-002](#dt-002-tipos-de-navegación-desfasados-respecto-al-runtime)
 - [DT-003](#dt-003-jwt_expires_in-cargado-e-ignorado-al-firmar)
+- [DT-004](#dt-004-usenavigationany-en-tabs-permite-rutas-inventadas)
+- [DT-005](#dt-005-tsc-no-es-gate-fiable-overflow-y-expo-image-picker)
 
 ---
 
@@ -35,6 +37,7 @@ Filosofía: nada de esto se arregla "de paso". Cada DT se ataca en su propio spr
 ---
 
 ### DT-002: Tipos de navegación desfasados respecto al runtime
+- **Estado**: Cerrada 2026-09-12. Residuales en [DT-004](#dt-004-usenavigationany-en-tabs-permite-rutas-inventadas) y [DT-005](#dt-005-tsc-no-es-gate-fiable-overflow-y-expo-image-picker).
 - **Severidad**: Media — TypeScript no impide (o no refleja) las pantallas reales; se puede navegar a nombres muertos o dejar screens huérfanas sin error de tipos.
 - **Archivos implicados**:
   - `PROJECT_MAP.json` (snapshot: `types/navigation.ts` declaraba Home / Register / Profile / Bookings)
@@ -73,8 +76,43 @@ Filosofía: nada de esto se arregla "de paso". Cada DT se ataca en su propio spr
 
 ---
 
+### DT-004: `useNavigation<any>()` en tabs permite rutas inventadas
+- **Severidad**: Media — el stack raíz ya está tipado; Home / Discover / Map / Radar eluden el checker con `any`.
+- **Archivos implicados**:
+  - `frontend/src/screens/HomeScreen.tsx:251` (`useNavigation<any>()`; `navigate('Tu Ruta')` en `:373`)
+  - `frontend/src/screens/DiscoverScreen.tsx:70` (`useNavigation<any>()`; `navigate('Landing', …)` en `:117`)
+  - `frontend/src/screens/MapScreen.tsx:189` (`useNavigation<any>()`; `navigate('Landing', …)` en `:199`)
+  - `frontend/src/screens/RadarScreen.tsx:196` (`useNavigation<any>()`; `navigate('Landing', …)` en `:205`)
+  - `frontend/src/navigation/MainTabs.tsx:29` (`createBottomTabNavigator()` sin param list)
+- **Síntoma observable**: `tsc` no falla si esas screens llaman `navigate('Home')` u otro nombre que no existe en `RootStackParamList` / tabs.
+- **Impacto si no se arregla**: el criterio “tsc falla al navegar a un nombre inexistente” solo cubre Splash / LoginStepper / Profile / experiments; el resto del producto no.
+- **Causa raíz probable**: las tabs se tiparon con `any` para cruzar stack raíz (`Landing`) y nombres de tab (`Tu Ruta`) sin `CompositeNavigationProp`.
+- **Criterio de aceptación para cerrarla**:
+  - Cero `useNavigation<any>()` en `frontend/src/screens/`.
+  - `MainTabs` usa un `MainTabParamList`; navegación a `Landing` tipada contra `RootStackParamList`.
+  - `npx tsc --noEmit` (cuando DT-005 esté cerrada) falla si se navega a un nombre que no existe.
+
+---
+
+### DT-005: `tsc` no es gate fiable (overflow y expo-image-picker)
+- **Severidad**: Media — bloquea el gate de tipos; no se puede usar `npx tsc --noEmit` como CI/criterio de DT.
+- **Archivos implicados**:
+  - `frontend/package.json` (`typescript`: `^5.9.3`; declara `expo-image-picker`)
+  - `frontend/src/screens/profile/ProfileScreen.tsx:30` (`import` de `expo-image-picker`)
+  - `frontend/tsconfig.json` (extiende `expo/tsconfig.base`; `include` por defecto)
+- **Síntoma observable**: `cd frontend && npx tsc --noEmit` aborta con `RangeError: Maximum call stack size exceeded` en `typescript/lib/_tsc.js` (`getTypeAtFlowNode`). Con `node --stack-size=65536 ./node_modules/typescript/bin/tsc --noEmit` el overflow desaparece y queda `TS2307`: no se resuelve el módulo `expo-image-picker` en `ProfileScreen.tsx:30`.
+- **Impacto si no se arregla**: cualquier DT que pida “tsc pasa limpio” o “tsc falla si X” no es verificable; CI no puede gatear tipos.
+- **Causa raíz probable**: overflow de análisis de flujo en TS 5.9 sobre este árbol; el paquete `expo-image-picker` está en `package.json` pero no aporta tipos resolubles en el `node_modules` actual (no instalado o types no visibles).
+- **Criterio de aceptación para cerrarla**:
+  - `cd frontend && npx tsc --noEmit` termina con exit 0, sin aumentar el stack de V8 a mano.
+  - `ProfileScreen` resuelve `expo-image-picker` (install/types) o el import se alinea con lo instalado.
+  - Cero `RangeError` de `_tsc.js` en el comando estándar.
+
+---
+
 ## Historial
 | Fecha | Cambio | Por |
 |---|---|---|
 | 2026-09-12 | Creación inicial tras auditoría (PROJECT_MAP). Líneas re-verificadas en código; se corrige que `getById` sí existe y que `authorize` ya monta admin. | agente |
 | 2026-09-12 | DT-003 cerrada: JWT_EXPIRES_IN ahora se usa al firmar | agente |
+| 2026-09-12 | DT-002 cerrada: RootStackParamList única fuente; types/navigation reexporta. PROJECT_MAP.json desfasado (LoginScreen/RegisterScreen ya no existían; no hubo move a `_legacy`). `npx tsc --noEmit` no es gate fiable: overflow de stack en tsc + `expo-image-picker` sin resolver (DT-005). Residuales: DT-004 (`useNavigation<any>`), DT-005. | agente |

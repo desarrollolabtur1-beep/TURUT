@@ -475,7 +475,7 @@ const LoginStepper: React.FC = () => {
             {/* Link "¿Olvidaste tu contraseña?" (solo login) */}
             {mode === 'login' && (
               <TouchableOpacity
-                onPress={() => navigation.navigate('ForgotPassword' as any)}
+                onPress={() => navigation.navigate('ForgotPassword')}
                 style={styles.forgotPasswordBtn}
                 activeOpacity={0.7}
               >
@@ -502,7 +502,7 @@ const LoginStepper: React.FC = () => {
                   Acepto los{' '}
                   <Text
                     style={styles.termsLink}
-                    onPress={() => navigation.navigate('TermsConditions' as any)}
+                    onPress={() => navigation.navigate('TermsConditions')}
                   >
                     Términos y Condiciones
                   </Text>

@@ -1,10 +1,10 @@
 /**
- * Tipos de navegación — sincronizados con AppNavigator.tsx
- * La fuente de verdad es RootStackParamList en AppNavigator.tsx
- * Este archivo re-exporta helpers tipados para usar en screens.
+ * Helpers de navegación. Fuente de verdad: RootStackParamList en AppNavigator.tsx.
  */
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/AppNavigator';
+
+export type { RootStackParamList };
 
 export type SplashScreenProps = NativeStackScreenProps<
   RootStackParamList,
@@ -18,7 +18,27 @@ export type MainTabsScreenProps = NativeStackScreenProps<
   RootStackParamList,
   'MainTabs'
 >;
+export type OnboardingScreenProps = NativeStackScreenProps<
+  RootStackParamList,
+  'Onboarding'
+>;
+export type TermsConditionsScreenProps = NativeStackScreenProps<
+  RootStackParamList,
+  'TermsConditions'
+>;
+export type ForgotPasswordScreenProps = NativeStackScreenProps<
+  RootStackParamList,
+  'ForgotPassword'
+>;
 export type LandingScreenProps = NativeStackScreenProps<
   RootStackParamList,
   'Landing'
+>;
+export type AdminDashboardScreenProps = NativeStackScreenProps<
+  RootStackParamList,
+  'AdminDashboard'
+>;
+export type ExperimentsScreenProps = NativeStackScreenProps<
+  RootStackParamList,
+  'Experiments'
 >;
