@@ -6,7 +6,6 @@ import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
-  Image,
   TouchableOpacity,
   ActivityIndicator,
   StyleSheet,
@@ -15,6 +14,8 @@ import {
   TextInput,
   Dimensions,
 } from 'react-native';
+import { Image } from 'expo-image';
+import { buildPlaceholderUrl } from '../../utils/cloudinary';
 import { ScrollView } from 'react-native-gesture-handler';
 import { LinearGradient } from 'expo-linear-gradient';
 import Animated, { FadeInDown, FadeIn } from 'react-native-reanimated';
@@ -184,11 +185,21 @@ const ExperienceDetailScreen: React.FC = () => {
         {/* ── Hero Image ── */}
         <View style={styles.heroContainer}>
           <Image
-            source={{ uri: experience.images && experience.images.length > 0
-              ? experience.images[0]
-              : undefined }}
+            source={{
+              uri:
+                experience.images && experience.images.length > 0
+                  ? experience.images[0].secure_url
+                  : undefined,
+            }}
             style={styles.heroImage}
-            resizeMode="cover"
+            contentFit="cover"
+            placeholder={
+              experience.images?.[0]?.public_id
+                ? buildPlaceholderUrl(experience.images[0].public_id)
+                : undefined
+            }
+            transition={300}
+            cachePolicy="memory-disk"
           />
           <LinearGradient
             colors={['rgba(5,5,5,0)', 'rgba(5,5,5,0.7)', 'rgba(5,5,5,1)']}

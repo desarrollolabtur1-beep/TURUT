@@ -2,7 +2,8 @@
  * SwipeCard — Card displayed in the swipe/discover view
  */
 import React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
+import { Image } from 'expo-image';
 import Svg, { Path, Circle } from 'react-native-svg';
 import { GlassCard } from '../ui/GlassCard';
 import { CategoryChip } from '../ui/CategoryChip';
@@ -26,7 +27,11 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({ destination, timerText = '
 
   return (
     <View style={styles.card}>
-      <Image source={cardImage} style={styles.image} resizeMode="cover" resizeMethod="resize" />
+      <Image
+        source={cardImage}
+        style={styles.image}
+        contentFit="cover"
+      />
 
       {/* Timer chip */}
       <GlassCard style={styles.timerChip}>

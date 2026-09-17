@@ -3,8 +3,10 @@
  * Auto-populated from backend, NO manual add button
  */
 import React from 'react';
-import { View, Text, Image, FlatList, StyleSheet, Platform } from 'react-native';
+import { View, Text, FlatList, StyleSheet, Platform } from 'react-native';
+import { Image } from 'expo-image';
 import { colors, textStyles, radii, shadows, spacing } from '../../theme';
+import { buildPlaceholderUrl } from '../../utils/cloudinary';
 import { VisitedDestination } from '../../context/AuthContext';
 
 interface VisitedDestinationsListProps {
@@ -52,12 +54,20 @@ const VisitedDestinationsList: React.FC<VisitedDestinationsListProps> = ({
             })
           : '';
 
-        const imageUri = dest.images?.[0] || '';
+        const imageUri = dest.images?.[0]?.secure_url || '';
+        const publicId = dest.images?.[0]?.public_id;
 
         return (
           <View style={styles.card}>
             {imageUri ? (
-              <Image source={{ uri: imageUri }} style={styles.cardImage} />
+              <Image
+                source={{ uri: imageUri }}
+                style={styles.cardImage}
+                placeholder={publicId ? buildPlaceholderUrl(publicId) : undefined}
+                transition={300}
+                cachePolicy="memory-disk"
+                contentFit="cover"
+              />
             ) : (
               <View style={[styles.cardImage, styles.cardImagePlaceholder]}>
                 <Text style={styles.cardImageEmoji}>📍</Text>

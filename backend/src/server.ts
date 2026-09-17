@@ -4,6 +4,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import connectDB from './config/database';
 import { env } from './config/env';
+import uploadsRoutes from './routes/uploads.routes';
 import authRoutes from './routes/auth.routes';
 import experienceRoutes from './routes/experience.routes';
 import bookingRoutes from './routes/booking.routes';
@@ -14,10 +15,10 @@ import mongoose from 'mongoose';
 
 const app = express();
 
-// ─── Connect Database ─────────────────────────────
+// ─── Connect Database ──────────────────────
 connectDB();
 
-// ─── Global Middleware ────────────────────────────
+// ─── Global Middleware ──────────────────────
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(helmet());
@@ -28,7 +29,7 @@ app.use(
   })
 );
 
-// ─── Health Check ─────────────────────────────────
+// ─── Health Check ──────────────────────────
 app.get('/api/health', (_req, res) => {
   const dbState = mongoose.connection.readyState;
   const dbStatus =
@@ -43,14 +44,15 @@ app.get('/api/health', (_req, res) => {
   });
 });
 
-// ─── API Routes ───────────────────────────────────
+// ─── API Routes ────────────────────────────
+app.use('/api/uploads', uploadsRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/experiences', experienceRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/user', profileRoutes);
 app.use('/api/admin', adminRoutes);
 
-// ─── Error Handling ───────────────────────────────
+// ─── Error Handling ────────────────────────
 app.use(notFound);
 app.use(errorHandler);
 

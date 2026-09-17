@@ -3,9 +3,11 @@
  * Uses TURUT design system exclusively
  */
 import React from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, Platform } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native';
+import { Image } from 'expo-image';
 import Svg, { Path, Circle } from 'react-native-svg';
 import { colors, textStyles, radii, shadows, spacing } from '../../theme';
+import { buildPlaceholderUrl } from '../../utils/cloudinary';
 
 interface ProfileHeaderProps {
   firstName: string;
@@ -13,6 +15,7 @@ interface ProfileHeaderProps {
   email: string;
   role: string;
   profileImage?: string;
+  profileImagePublicId?: string;
   onEditPhoto: () => void;
 }
 
@@ -34,7 +37,18 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
         <View style={styles.avatarGlow}>
           <View style={styles.avatarBorder}>
             {hasImage ? (
-              <Image source={{ uri: profileImage }} style={styles.avatarImage} />
+              <Image
+                source={{ uri: profileImage }}
+                style={styles.avatarImage}
+                placeholder={
+                  profileImagePublicId
+                    ? buildPlaceholderUrl(profileImagePublicId)
+                    : undefined
+                }
+                transition={300}
+                cachePolicy="memory-disk"
+                contentFit="cover"
+              />
             ) : (
               <View style={styles.avatarPlaceholder}>
                 <Text style={styles.avatarInitials}>{initials}</Text>

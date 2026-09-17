@@ -1,5 +1,8 @@
 import { Schema, model, Document } from 'mongoose';
 import { Types } from 'mongoose';
+import { CloudinaryAsset } from '../config/cloudinary';
+
+export interface ImageAsset extends CloudinaryAsset {}
 
 export interface IExperience extends Document {
   title: string;
@@ -8,7 +11,7 @@ export interface IExperience extends Document {
   price: number;
   duration: number; // in hours
   category: string;
-  images: string[];
+  images: ImageAsset[];
   availableDates: Date[];
   maxParticipants: number;
   isActive: boolean;
@@ -17,6 +20,14 @@ export interface IExperience extends Document {
   createdAt: Date;
   updatedAt: Date;
 }
+
+const ImageAssetSchema = new Schema({
+  public_id: { type: String, required: true },
+  secure_url: { type: String, required: true },
+  width: { type: Number, default: 0 },
+  height: { type: Number, default: 0 },
+  blurhash: { type: String },
+});
 
 const ExperienceSchema = new Schema<IExperience>(
   {
@@ -48,9 +59,9 @@ const ExperienceSchema = new Schema<IExperience>(
       required: [true, 'Category is required'],
     },
     images: {
-      type: [String],
+      type: [ImageAssetSchema],
       validate: {
-        validator: (arr: string[]) => arr.length > 0,
+        validator: (arr: unknown[]) => arr.length > 0,
         message: 'At least one image is required',
       },
     },

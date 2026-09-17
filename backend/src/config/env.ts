@@ -28,4 +28,7 @@ export const env = {
   ),
   JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN ?? '7d',
   CORS_ORIGIN: (process.env.CORS_ORIGIN ?? 'http://localhost:3000').split(',').map(s => s.trim()),
+  CLOUDINARY_CLOUD_NAME: requireEnv('CLOUDINARY_CLOUD_NAME'),
+  CLOUDINARY_API_KEY: requireEnv('CLOUDINARY_API_KEY'),
+  CLOUDINARY_API_SECRET: requireEnv('CLOUDINARY_API_SECRET'),
 } as const;

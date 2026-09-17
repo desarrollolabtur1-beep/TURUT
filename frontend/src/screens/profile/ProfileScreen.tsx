@@ -33,6 +33,7 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../../navigation/AppNavigator';
 import { useAuth, VisitedDestination } from '../../context/AuthContext';
 import { userService } from '../../services/api.service';
+import { uploadToCloudinary } from '../../utils/cloudinary';
 import { colors, textStyles, radii, shadows, spacing } from '../../theme';
 import ProfileHeader from '../../components/profile/ProfileHeader';
 import VisitedDestinationsList from '../../components/profile/VisitedDestinationsList';
@@ -220,19 +221,20 @@ const ProfileScreen = () => {
         allowsEditing: true,
         aspect: [1, 1],
         quality: 0.7,
-        base64: true,
       });
 
       if (result.canceled || !result.assets?.[0]) return;
 
       const asset = result.assets[0];
-      const imageUri = asset.base64
-        ? `data:image/jpeg;base64,${asset.base64}`
-        : asset.uri;
+      if (!asset.uri) return;
 
       setIsSaving(true);
       try {
-        await userService.updateProfile({ profileImage: imageUri });
+        const uploaded = await uploadToCloudinary(asset.uri, 'turut/avatars');
+        await userService.updateProfile({
+          profileImage: uploaded.secure_url,
+          avatarMeta: { public_id: uploaded.public_id, width: uploaded.width, height: uploaded.height },
+        });
         await refreshUser();
       } catch (error: any) {
         const msg = error?.response?.data?.message || 'Error al actualizar la foto';
@@ -340,6 +342,7 @@ const ProfileScreen = () => {
           email={user?.email ?? ''}
           role={user?.role ?? 'user'}
           profileImage={user?.profileImage}
+          profileImagePublicId={user?.avatarMeta?.public_id}
           onEditPhoto={handleEditPhoto}
         />
 

@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { Experience } from '../models/Experience.model';
+import { normalizeImageAsset, ImageAsset } from '../config/cloudinary';
 
 // @desc    Get all active experiences
 // @route   GET /api/experiences
@@ -127,6 +128,19 @@ export const createExperience = async (
       return;
     }
 
+    const rawImages: (string | ImageAsset)[] = images ?? [];
+    const normalizedImages = rawImages
+      .map(normalizeImageAsset)
+      .filter((img): img is ImageAsset => 'secure_url' in img);
+
+    if (normalizedImages.length === 0) {
+      res.status(400).json({
+        success: false,
+        message: 'Al menos una imagen válida es obligatoria',
+      });
+      return;
+    }
+
     const experience = await Experience.create({
       title,
       description,
@@ -134,7 +148,7 @@ export const createExperience = async (
       price,
       duration,
       category,
-      images: images ?? [],
+      images: normalizedImages,
       availableDates: availableDates ?? [],
       maxParticipants: maxParticipants ?? 10,
       createdBy: req.userId!,
@@ -177,9 +191,24 @@ export const updateExperience = async (
       return;
     }
 
+    const updateData = { ...req.body };
+    if (updateData.images !== undefined) {
+      const rawImages: (string | ImageAsset)[] = updateData.images;
+      updateData.images = rawImages
+        .map(normalizeImageAsset)
+        .filter((img): img is ImageAsset => 'secure_url' in img);
+      if (updateData.images.length === 0) {
+        res.status(400).json({
+          success: false,
+          message: 'Al menos una imagen válida es obligatoria',
+        });
+        return;
+      }
+    }
+
     const updatedExperience = await Experience.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      updateData,
       { new: true, runValidators: true }
     );
 

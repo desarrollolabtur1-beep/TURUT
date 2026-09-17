@@ -1,5 +1,6 @@
 import { Schema, model, Document, Types } from 'mongoose';
 import bcrypt from 'bcrypt';
+import { CloudinaryAsset } from '../config/cloudinary';
 
 export interface IVisitedDestination {
   destination: Types.ObjectId;
@@ -27,6 +28,7 @@ export interface IUser extends Document {
   role: 'user' | 'admin';
   isActive: boolean;
   profileImage: string;
+  avatarMeta?: CloudinaryAsset;
   bio: string;
   visitedDestinations: IVisitedDestination[];
   // ── Datos demográficos ──
@@ -103,6 +105,10 @@ const UserSchema = new Schema<IUser>(
     profileImage: {
       type: String,
       default: '',
+    },
+    avatarMeta: {
+      type: Schema.Types.Mixed,
+      default: undefined,
     },
     bio: {
       type: String,

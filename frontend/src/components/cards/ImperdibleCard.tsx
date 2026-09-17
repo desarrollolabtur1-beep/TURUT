@@ -11,7 +11,8 @@
  * - Animated "pop" when toggling favorite
  */
 import React, { useCallback } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, Pressable } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Pressable } from 'react-native';
+import { Image } from 'expo-image';
 import Animated, {
   FadeInDown,
   useSharedValue,
@@ -110,7 +111,7 @@ export const ImperdibleCard: React.FC<ImperdibleCardProps> = ({
       >
         {/* Background Image */}
         <View style={styles.bgImg}>
-          <Image source={destination.img} style={styles.img} resizeMode="cover" resizeMethod="resize" />
+          <Image source={destination.img} style={styles.img} contentFit="cover" />
         </View>
 
         {/* ── Category Chip (top-left) ── */}

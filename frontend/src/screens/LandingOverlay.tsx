@@ -12,7 +12,6 @@ import React, { useState, useCallback, useEffect, useRef } from 'react';
 import {
   View,
   Text,
-  Image,
   ScrollView,
   TouchableOpacity,
   Linking,
@@ -24,6 +23,7 @@ import {
   NativeSyntheticEvent,
   NativeScrollEvent,
 } from 'react-native';
+import { Image } from 'expo-image';
 import Animated, {
   FadeIn,
   FadeOut,
@@ -563,8 +563,7 @@ const LandingOverlay: React.FC = () => {
                 <Image
                   source={item}
                   style={styles.heroImg}
-                  resizeMode="cover"
-                  resizeMethod="resize"
+                  contentFit="cover"
                 />
               </TouchableOpacity>
             )}
@@ -861,14 +860,14 @@ const LandingOverlay: React.FC = () => {
           >
             <CloseIcon />
           </TouchableOpacity>
-          <Image
+           <Image
             source={
               destination.gallery && destination.gallery.length > 0
                 ? destination.gallery[galleryIndex]
                 : destination.img
             }
             style={styles.fullScreenImg}
-            resizeMode="contain"
+            contentFit="contain"
           />
         </View>
       </Modal>

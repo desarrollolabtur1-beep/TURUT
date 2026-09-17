@@ -34,7 +34,7 @@ export interface VisitedDestination {
     _id: string;
     title: string;
     location: string;
-    images: string[];
+    images: Array<{ secure_url: string; public_id?: string; width?: number; height?: number }>;
     category: string;
   } | string; // may be unpopulated ObjectId
   visitedAt: string;
@@ -61,6 +61,7 @@ export interface UserProfile {
   role: string;
   isActive?: boolean;
   profileImage?: string;
+  avatarMeta?: { public_id?: string; secure_url?: string; width?: number; height?: number; blurhash?: string };
   bio?: string;
   visitedDestinations?: VisitedDestination[];
   // Datos demográficos

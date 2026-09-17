@@ -11,7 +11,6 @@ import {
   View,
   Text,
   StyleSheet,
-  Image,
   Dimensions,
   TouchableOpacity,
   NativeSyntheticEvent,
@@ -20,6 +19,7 @@ import {
   Platform,
   Modal,
 } from 'react-native';
+import { Image } from 'expo-image';
 import { ScrollView } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
@@ -114,8 +114,7 @@ const StoryCircle: React.FC<{
           <Image
             source={destination.img}
             style={styles.storyImage}
-            resizeMode="cover"
-            resizeMethod="resize"
+            contentFit="cover"
           />
         </Animated.View>
         <Text style={styles.storyLabel} numberOfLines={1}>
@@ -192,8 +191,7 @@ const HeroCarousel: React.FC<{
               <Image
                 source={dest.img}
                 style={styles.carouselImage}
-                resizeMode="cover"
-                resizeMethod="resize"
+                contentFit="cover"
               />
               <LinearGradient
                 colors={['transparent', 'rgba(0,0,0,0.85)']}
@@ -536,8 +534,7 @@ const HomeScreen: React.FC = () => {
                         <Image
                           source={item}
                           style={styles.modalImage}
-                          resizeMode="contain"
-                          resizeMethod="resize"
+                          contentFit="contain"
                         />
                       </View>
                     )}

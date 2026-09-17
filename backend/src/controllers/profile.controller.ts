@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { User, IUser } from '../models/User.model';
 import { Experience } from '../models/Experience.model';
+import { uploadBase64ToCloudinary, normalizeImageAsset } from '../config/cloudinary';
 
 // ── Helper: construir respuesta de usuario consistente ───────────────────────
 const buildUserResponse = (user: IUser) => ({
@@ -91,7 +92,21 @@ export const updateProfile = async (req: Request, res: Response): Promise<void> 
 
     // ── Profile Image ──
     if (profileImage !== undefined) {
-      updateData.profileImage = String(profileImage).trim();
+      const isDataUri = typeof profileImage === 'string' && profileImage.startsWith('data:image');
+      if (isDataUri) {
+        const asset = await uploadBase64ToCloudinary(profileImage, 'turut/avatars');
+        updateData.profileImage = asset.secure_url;
+        if (req.body.avatarMeta === undefined) {
+          updateData.avatarMeta = asset;
+        }
+      } else {
+        updateData.profileImage = String(profileImage).trim();
+      }
+      if (req.body.avatarMeta !== undefined) {
+        updateData.avatarMeta = req.body.avatarMeta;
+      }
+    } else if (req.body.avatarMeta !== undefined) {
+      updateData.avatarMeta = req.body.avatarMeta;
     }
 
     // ── Datos demográficos ──
